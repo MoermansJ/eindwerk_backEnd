@@ -1,5 +1,6 @@
-package be.intecbrussel.eindwerk.controller;
+package be.intecbrussel.eindwerk.unit.controller;
 
+import be.intecbrussel.eindwerk.controller.AuthController;
 import be.intecbrussel.eindwerk.dto.AuthAttempt;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
@@ -71,26 +72,17 @@ public class AuthControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
-    // Helper method to convert objects to JSON
-    private String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Test
     void testLoginSuccess() throws Exception {
         // Mocking the login behavior in AuthService
-//        User mockUser = new User("username", "password");
-//        when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(mockUser));
+        User mockUser = new User("username", "password");
+        when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(mockUser));
 
         // Creating a sample AuthAttempt
         AuthAttempt authAttempt = new AuthAttempt("username", "password");
 
         // Performing the POST request
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/login")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .content(asJsonString(authAttempt))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -99,7 +91,7 @@ public class AuthControllerTest {
     @Test
     void testLoginFailureUserNotFound() throws Exception {
         // Mocking the login behavior in AuthService to throw an EntityNotFoundException
-//        when(userRepository.findUserByUsername("username")).thenReturn(Optional.empty());
+        when(userRepository.findUserByUsername("username")).thenReturn(Optional.empty());
         when(authService.login(any(AuthAttempt.class))).thenThrow(new RuntimeException("Log in failed"));
 
 
@@ -107,10 +99,18 @@ public class AuthControllerTest {
         AuthAttempt authAttempt = new AuthAttempt("username", "password");
 
         // Performing the POST request
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/login")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                         .content(asJsonString(authAttempt))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
+    // Helper method to convert objects to JSON
+    private String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

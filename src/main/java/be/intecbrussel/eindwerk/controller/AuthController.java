@@ -21,17 +21,17 @@ public class AuthController {
             return ResponseEntity.ok(authService.register(authAttempt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration failed: \n" + e.getMessage());
+                    .body("Registration failed: " + e.getMessage());
         }
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody AuthAttempt authAttempt) {
         try {
             return ResponseEntity.ok(authService.login(authAttempt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Log in failed: \n" + e.getMessage());
+                    .body("Log in failed: " + e.getMessage());
         }
     }
 }
