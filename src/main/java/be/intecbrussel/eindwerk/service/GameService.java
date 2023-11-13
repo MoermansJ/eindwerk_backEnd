@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 @Service
 public class GameService {
-    private int x = 0;
+    private int x = 3;
     private int y = 0;
     private static String[][] tileMap = createTileMap();
 
@@ -27,48 +27,63 @@ public class GameService {
 
 
     private String[][] movePlayer(String[][] tileMap, String key) {
-        //clearing previous char
-        tileMap[x][y] = "_";
-
         switch (key) {
             case "ARROWLEFT":
                 if (this.x > 0) {
+                    tileMap[x][y] = "_";    //clearing previous char
                     this.x -= 1;
+                    tileMap[x][y] = "P";    //printing next char
                 }
                 break;
             case "ARROWRIGHT":
                 if (this.x < tileMap.length - 1) {
+                    tileMap[x][y] = "_";    //clearing previous char
                     this.x += 1;
+                    tileMap[x][y] = "P";    //printing next char
+                }
+                break;
+            case "ARROWDOWN":
+                if (this.y < tileMap[x].length - 1) {
+                    tileMap[x][y] = "_";    //clearing previous char
+                    this.y += 1;
+                    tileMap[x][y] = "P";    //printing next char
+                }
+                break;
+            case "ARROWUP":
+                //REPLACE THIS LOGIC WITH LOGIC TO ROTATE THE BLOCK
+                if (this.y > 0) {
+                    tileMap[x][y] = "_";    //clearing previous char
+                    this.y -= 1;
+                    tileMap[x][y] = "P";    //printing next char
                 }
                 break;
         }
-
-        //printing next char
-        tileMap[x][y] = "P";
 
         return tileMap;
     }
 
     private String[][] moveComputer(String[][] tileMap) {
+        if (!canMoveDownOneRow()) {
+            //LOGIC TO STOP OR RESTART THE GAME
+            x = 3;
+            y = 0;
+            tileMap[x][y] = "P";
+            return tileMap;
+        }
+
         //clearing previous char
         tileMap[x][y] = "_";
 
-        if (!canMoveDownOneRow()) {
-            //reset the game
-            tileMap[x][y] = "P";
-            x = 3;
-            y = 0;
-        }
-
-        //printing next char
-        tileMap[x][++y] = "P";
+        //printing char one row down
+        this.y++;
+        tileMap[x][y] = "P";
 
         return tileMap;
     }
 
 
     private static String[][] createTileMap() {
-        String[][] tilemap = new String[6][6];
+        String[][] tilemap = new String[7][7];
 
         //filling with _
         for (String[] strings : tilemap) {
@@ -76,7 +91,9 @@ public class GameService {
         }
 
         //player starting position
-        tilemap[0][0] = "P";
+        int x = 3;
+        int y = 0;
+        tilemap[x][y] = "P";
 
         return tilemap;
     }
@@ -85,7 +102,7 @@ public class GameService {
         int indexBelowCurrent = y + 1;
 
         //if bottom boundary is reached OR if obstructed
-        if (indexBelowCurrent == tileMap[x].length || !tileMap[x][indexBelowCurrent].equals("_")) {
+        if (indexBelowCurrent >= tileMap[x].length || !tileMap[x][indexBelowCurrent].equals("_")) {
             return false;
         }
 
