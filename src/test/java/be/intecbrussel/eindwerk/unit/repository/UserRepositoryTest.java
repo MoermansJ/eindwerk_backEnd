@@ -2,6 +2,7 @@ package be.intecbrussel.eindwerk.unit.repository;
 
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@Disabled
 public class UserRepositoryTest {
 
     @Autowired

@@ -1,12 +1,9 @@
 package be.intecbrussel.eindwerk.service;
 
 import be.intecbrussel.eindwerk.dto.AuthAttempt;
-import be.intecbrussel.eindwerk.exception.InvalidPasswordException;
+import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,11 +20,11 @@ public class AuthService {
         Optional<User> oDbUser = userRepository.findUserByUsername(authAttempt.getUsername());
 
         if (oDbUser.isPresent()) {
-            throw new EntityExistsException("That username is already registered.");
+            throw new InvalidCredentialsException("That username is already registered.");
         }
 
         if (authAttempt.getPassword().length() <= 6) {
-            throw new InvalidPasswordException("Password must be at least 7 characters.");
+            throw new InvalidCredentialsException("Password must be at least 7 characters.");
         }
 
         return userRepository.save(new User(authAttempt.getUsername(), authAttempt.getPassword()));
@@ -37,13 +34,13 @@ public class AuthService {
         Optional<User> oDbUser = userRepository.findUserByUsername(authAttempt.getUsername());
 
         if (oDbUser.isEmpty()) {
-            throw new EntityNotFoundException("Username not found.");
+            throw new InvalidCredentialsException("Username not found.");
         }
 
         User dbUser = oDbUser.get();
 
         if (!dbUser.getPassword().equals(authAttempt.getPassword())) {
-            throw new InvalidPasswordException("Incorrect password");
+            throw new InvalidCredentialsException("Incorrect password.");
         }
 
         return dbUser;
