@@ -1,6 +1,7 @@
 package be.intecbrussel.eindwerk.unit.service;
 
 import be.intecbrussel.eindwerk.dto.AuthAttempt;
+import be.intecbrussel.eindwerk.dto.LoginResponse;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
@@ -84,12 +85,11 @@ class AuthServiceTest {
         when(userRepository.findUserByUsername("existingUsername")).thenReturn(Optional.of(new User("existingUsername", "password")));
 
         // Act
-        User loggedInUser = authService.login(authAttempt);
+        LoginResponse loggedInUser = authService.login(authAttempt);
 
         // Assert
         assertNotNull(loggedInUser);
         assertEquals("existingUsername", loggedInUser.getUsername());
-        assertEquals("password", loggedInUser.getPassword());
 
         // Verify that userRepository methods were called
         verify(userRepository, times(1)).findUserByUsername("existingUsername");

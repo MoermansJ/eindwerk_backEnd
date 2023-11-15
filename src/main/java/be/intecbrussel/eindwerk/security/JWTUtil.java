@@ -8,35 +8,26 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class JWTUtil {
-    //this works thanks to Bogdan
-
-    // secret_key field is the secret key used to sign the JWT.
-    private final String secret_key = "mysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkey";
-
-    //accessTokenValidity defines the validity period of the access token in milliseconds (1 hour in this case).
-    private final long accessTokenValidity = 60 * 60 * 1000;
-
+    //Thank-you Bogdan for helping me set up Spring Security! :)
+    private final String secretKey = "mysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkey";
+    private final long accessTokenValidity = 60 * 60 * 1000; //1 hour
     private final JwtParser jwtParser;
 
     //TOKEN_HEADER and TOKEN_PREFIX are constants used for working with the Authorization header in HTTP requests.
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    // initializes a JwtParser using the secret key.
     public JWTUtil() {
-        //this.jwtParser = jwtParser;
-        this.jwtParser = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secret_key.getBytes(StandardCharsets.UTF_8))).build();
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8))).build();
     }
 
     //    createToken:
@@ -52,13 +43,13 @@ public class JWTUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
-                .signWith(Keys.hmacShaKeyFor(secret_key.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS512)
                 .compact();
     }
 
     // Parse not the JWT parse the JWS claims from a given token using the initialized JwtParser.
     private Claims parseJwtClaims(String token) {
-        return jwtParser.parseClaimsJws(token).getBody(); // Error was here!!!!
+        return jwtParser.parseClaimsJws(token).getBody();
     }
 
     // Resolves the JWT claims from the HttpServletRequest.
@@ -98,4 +89,18 @@ public class JWTUtil {
             throw e;
         }
     }
+
+    public boolean validateClaims(String token) {
+        //throws exceptions because the JWT token String becomes malformed, should contain 2 period-characters "."
+        //TO DO: FIX !!
+        try {
+            System.out.println(token);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            System.out.println(claims.getBody());
+            return validateClaims(claims.getBody());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 }

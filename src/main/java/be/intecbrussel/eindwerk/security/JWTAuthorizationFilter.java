@@ -65,7 +65,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.resolveClaims(request);
             //  it proceeds to set up Spring Security authentication.
             if (claims != null & jwtUtil.validateClaims(claims)) {
-                // Extracts the email from the subject of the claims.
                 String email = claims.getSubject();
 
                 List<GrantedAuthority> list = new ArrayList<>();

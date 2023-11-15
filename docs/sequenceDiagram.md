@@ -74,7 +74,7 @@ alt Opt<User> is present
 	end
 
 	alt password is correct
-	authservice --> authcontroller : User
+	authservice --> authcontroller : LoginResponse
 	deactivate authservice
 	end
 end

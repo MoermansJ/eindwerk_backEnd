@@ -21,7 +21,7 @@ public class AuthController {
             return ResponseEntity.ok(authService.register(authAttempt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration failed: " + e.getMessage());
+                    .body("Registration failed. " + e.getMessage());
         }
     }
 
@@ -31,7 +31,17 @@ public class AuthController {
             return ResponseEntity.ok(authService.login(authAttempt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Log in failed: " + e.getMessage());
+                    .body("Log in failed. " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/validateToken")
+    public ResponseEntity validateToken(@RequestBody String token) {
+        try {
+            return ResponseEntity.ok(authService.validateToken(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Token validation failed. " + e.getMessage());
         }
     }
 }

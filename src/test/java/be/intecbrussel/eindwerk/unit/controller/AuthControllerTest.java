@@ -62,7 +62,7 @@ public class AuthControllerTest {
     @Test
     void testRegisterFailure() throws Exception {
         // Mocking the registration behavior in AuthService to throw an exception
-        when(authService.register(any(AuthAttempt.class))).thenThrow(new RuntimeException("Registration failed"));
+        when(authService.register(any(AuthAttempt.class))).thenThrow(new RuntimeException("Registration failed."));
 
         // Creating a sample AuthAttempt
         AuthAttempt authAttempt = new AuthAttempt("username", "password");
@@ -94,7 +94,7 @@ public class AuthControllerTest {
     void testLoginFailureUserNotFound() throws Exception {
         // Mocking the login behavior in AuthService to throw an EntityNotFoundException
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.empty());
-        when(authService.login(any(AuthAttempt.class))).thenThrow(new RuntimeException("Log in failed"));
+        when(authService.login(any(AuthAttempt.class))).thenThrow(new RuntimeException("Log in failed."));
 
 
         // Creating a sample AuthAttempt

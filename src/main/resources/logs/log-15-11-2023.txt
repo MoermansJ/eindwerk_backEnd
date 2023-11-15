@@ -1,0 +1,12 @@
+[2023-11-15 11:21] : Attempting to log in: abcdefg
+[2023-11-15 11:21] : Log in attempt successful: abcdefg
+[2023-11-15 11:21] : Log in attempt concluded: abcdefg
+[2023-11-15 11:52] : Attempting registration: aza
+[2023-11-15 11:52] : Registration failed: aza
+[2023-11-15 11:52] : EXCEPTION: Password must be at least 7 characters.
+[2023-11-15 11:52] : Attempting registration: aza
+[2023-11-15 11:52] : Registration failed: aza
+[2023-11-15 11:52] : EXCEPTION: Password must be at least 7 characters.
+[2023-11-15 11:53] : Attempting registration: aza
+[2023-11-15 11:53] : Registration failed: aza
+[2023-11-15 11:53] : EXCEPTION: Password must be at least 7 characters.
