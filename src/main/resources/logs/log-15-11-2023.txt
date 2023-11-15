@@ -6,3 +6,65 @@
 [2023-11-15 13:40] : Registration failed: That username is already registered.
 [2023-11-15 13:40] : Attempting registration: AuthAttempt(username=aaaaaaaaaaaaaa, password=zzzzzzzzzzzzzzzzzzzz)
 [2023-11-15 13:40] : Registration complete: AuthAttempt(username=aaaaaaaaaaaaaa, password=zzzzzzzzzzzzzzzzzzzz)
+[2023-11-15 13:44] : Attempting token validation: {}
+[2023-11-15 13:44] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:45] : Attempting token validation: {}
+[2023-11-15 13:45] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:45] : Attempting token validation: {}
+[2023-11-15 13:45] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:45] : Attempting token validation: {}
+[2023-11-15 13:45] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:45] : Attempting token validation: {}
+[2023-11-15 13:45] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:45] : Attempting token validation: {}
+[2023-11-15 13:45] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:46] : Attempting token validation: {}
+[2023-11-15 13:46] : Token validation failed: JWT strings must contain exactly 2 period characters. Found: 0
+[2023-11-15 13:46] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:46] : Token validation failed: Illegal base64url character: '"'
+[2023-11-15 13:46] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:46] : Token validation failed: Illegal base64url character: '"'
+[2023-11-15 13:46] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:46] : Token validation failed: Illegal base64url character: '"'
+[2023-11-15 13:48] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:48] : Token validation failed: Illegal base64url character: ':'
+[2023-11-15 13:48] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:48] : Token validation failed: Illegal base64url character: ':'
+[2023-11-15 13:49] : Attempting token validation: {"token":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:49] : Token validation failed: Illegal base64url character: ':'
+[2023-11-15 13:49] : Attempting token validation: {"token":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:49] : Token validation failed: Illegal base64url character: ':'
+[2023-11-15 13:49] : Attempting token validation: {"lsToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw"}
+[2023-11-15 13:49] : Token validation failed: Illegal base64url character: ':'
+[2023-11-15 14:02] : Attempting token validation: null
+[2023-11-15 14:02] : Token validation failed: JWT String argument cannot be null or empty.
+[2023-11-15 14:02] : Attempting token validation: null
+[2023-11-15 14:02] : Token validation failed: JWT String argument cannot be null or empty.
+[2023-11-15 14:03] : Attempting token validation: null
+[2023-11-15 14:03] : Token validation failed: JWT String argument cannot be null or empty.
+[2023-11-15 14:05] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDQzNzAyfQ.XwIry4Xc_WuBVC2yzzvglzLXYOcYQRKryF64TfvtZ5wU-LYaxZYDRNI2g9TGPjjOYXJ-_Nna51nKK_xyEYVGiw
+[2023-11-15 14:05] : Token validation failed: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+[2023-11-15 14:56] : Attempting login: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:56] : Login failed: Username not found.
+[2023-11-15 14:57] : Attempting registration: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:57] : Registration complete: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:57] : Attempting registration: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:57] : Registration failed: That username is already registered.
+[2023-11-15 14:58] : Attempting login: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:58] : Login complete: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 14:58] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxOTE2MDU2NzI0fQ.nOXYIWF295tJ_EMFqosHdE4jF36YhoDfFgEnPFXP_Sz_K43UtfROK4T6ingRMFppErKu-kGXYG8pxylOUCMsZg
+[2023-11-15 14:58] : Token validation failed: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+[2023-11-15 15:09] : Attempting registration: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 15:09] : Registration failed: That username is already registered.
+[2023-11-15 15:10] : Attempting login: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 15:10] : Login complete: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 15:10] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDU3NDY3fQ.0iuTOcSK7ekd-zHUIJ-OctJ_Gl_-_lrtoOGR07MTWx1BkRxAI2F-abe08e1_txxrcJJJvsFDG1KEtW85F4H8Dw
+[2023-11-15 15:10] : Token validation failed: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+[2023-11-15 15:11] : Attempting login: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 15:11] : Login complete: AuthAttemptDTO(username=abcdefg, password=abcdefg)
+[2023-11-15 15:11] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDYxMDY5fQ.Ud3G7sjxcXHSFG7Q41mRxcqD2B8JxAHSxHo0PC7dxcMC5FjQQAPxhQi56BNzFMAXYl4ECVI-1mC76PI9ReAo9g
+[2023-11-15 15:11] : Token validation failed: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+[2023-11-15 15:20] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDYxMDY5fQ.Ud3G7sjxcXHSFG7Q41mRxcqD2B8JxAHSxHo0PC7dxcMC5FjQQAPxhQi56BNzFMAXYl4ECVI-1mC76PI9ReAo9g
+[2023-11-15 15:20] : Token validation complete: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDYxMDY5fQ.Ud3G7sjxcXHSFG7Q41mRxcqD2B8JxAHSxHo0PC7dxcMC5FjQQAPxhQi56BNzFMAXYl4ECVI-1mC76PI9ReAo9g
+[2023-11-15 15:26] : Attempting token validation: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDYxMDY5fQ.Ud3G7sjxcXHSFG7Q41mRxcqD2B8JxAHSxHo0PC7dxcMC5FjQQAPxhQi56BNzFMAXYl4ECVI-1mC76PI9ReAo9g
+[2023-11-15 15:26] : Token validation complete: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmNkZWZnIiwiZXhwIjoxNzAwMDYxMDY5fQ.Ud3G7sjxcXHSFG7Q41mRxcqD2B8JxAHSxHo0PC7dxcMC5FjQQAPxhQi56BNzFMAXYl4ECVI-1mC76PI9ReAo9g

@@ -1,14 +1,11 @@
 package be.intecbrussel.eindwerk.service;
 
-import be.intecbrussel.eindwerk.dto.AuthAttempt;
-import be.intecbrussel.eindwerk.dto.LoginResponse;
+import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
+import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
 import be.intecbrussel.eindwerk.security.JWTUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,22 +28,22 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public User register(AuthAttempt authAttempt) {
-        Optional<User> oDbUser = userRepository.findUserByUsername(authAttempt.getUsername());
+    public User register(AuthAttemptDTO authAttemptDTO) {
+        Optional<User> oDbUser = userRepository.findUserByUsername(authAttemptDTO.getUsername());
 
         if (oDbUser.isPresent()) {
             throw new InvalidCredentialsException("That username is already registered.");
         }
 
-        if (authAttempt.getPassword().length() <= 6) {
+        if (authAttemptDTO.getPassword().length() <= 6) {
             throw new InvalidCredentialsException("Password must be at least 7 characters.");
         }
 
-        return userRepository.save(new User(authAttempt.getUsername(), bCryptPasswordEncoder.encode(authAttempt.getPassword())));
+        return userRepository.save(new User(authAttemptDTO.getUsername(), bCryptPasswordEncoder.encode(authAttemptDTO.getPassword())));
     }
 
-    public LoginResponse login(AuthAttempt authAttempt) {
-        Optional<User> oDbUser = userRepository.findUserByUsername(authAttempt.getUsername());
+    public AuthTokenDTO login(AuthAttemptDTO authAttemptDTO) {
+        Optional<User> oDbUser = userRepository.findUserByUsername(authAttemptDTO.getUsername());
 
         if (oDbUser.isEmpty()) {
             throw new InvalidCredentialsException("Username not found.");
@@ -54,17 +51,17 @@ public class AuthService {
 
         User dbUser = oDbUser.get();
 
-        if (!bCryptPasswordEncoder.matches(authAttempt.getPassword(), dbUser.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(authAttemptDTO.getPassword(), dbUser.getPassword())) {
             throw new InvalidCredentialsException("Incorrect password.");
         }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authAttempt.getUsername(), authAttempt.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authAttemptDTO.getUsername(), authAttemptDTO.getPassword()));
         String email = authentication.getName();
         User user = new User(email, "");
         String token = jwtUtil.createToken(user, "NO ROLES IN THIS APPLICATION YET");
-        LoginResponse loginResponse = new LoginResponse(email, token);
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(email, token);
 
-        return loginResponse;
+        return authTokenDTO;
     }
 
     public boolean validateToken(String token) {

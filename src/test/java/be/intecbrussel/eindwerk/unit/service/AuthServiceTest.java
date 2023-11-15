@@ -1,7 +1,7 @@
 package be.intecbrussel.eindwerk.unit.service;
 
-import be.intecbrussel.eindwerk.dto.AuthAttempt;
-import be.intecbrussel.eindwerk.dto.LoginResponse;
+import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
+import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
@@ -31,12 +31,12 @@ class AuthServiceTest {
     @Test
     void testRegister_SuccessfulRegistration() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("newUsername", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("newUsername", "password");
         when(userRepository.findUserByUsername("newUsername")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        User registeredUser = authService.register(authAttempt);
+        User registeredUser = authService.register(authAttemptDTO);
 
         // Assert
         assertNotNull(registeredUser);
@@ -51,11 +51,11 @@ class AuthServiceTest {
     @Test
     void testRegister_UsernameAlreadyExists() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("existingUsername", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("existingUsername", "password");
         when(userRepository.findUserByUsername("existingUsername")).thenReturn(Optional.of(new User("existingUsername", "password")));
 
         // Act & Assert
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.register(authAttempt));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.register(authAttemptDTO));
         assertEquals("That username is already registered.", exception.getMessage());
 
         // Verify that userRepository methods were called
@@ -66,11 +66,11 @@ class AuthServiceTest {
     @Test
     void testRegister_InvalidPassword() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("newUsername", "short");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("newUsername", "short");
         when(userRepository.findUserByUsername("newUsername")).thenReturn(Optional.empty());
 
         // Act & Assert
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.register(authAttempt));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.register(authAttemptDTO));
         assertEquals("Password must be at least 7 characters.", exception.getMessage());
 
         // Verify that userRepository methods were called
@@ -81,11 +81,11 @@ class AuthServiceTest {
     @Test
     void testLogin_SuccessfulLogin() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("existingUsername", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("existingUsername", "password");
         when(userRepository.findUserByUsername("existingUsername")).thenReturn(Optional.of(new User("existingUsername", "password")));
 
         // Act
-        LoginResponse loggedInUser = authService.login(authAttempt);
+        AuthTokenDTO loggedInUser = authService.login(authAttemptDTO);
 
         // Assert
         assertNotNull(loggedInUser);
@@ -98,11 +98,11 @@ class AuthServiceTest {
     @Test
     void testLogin_UserNotFound() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("nonexistentUsername", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("nonexistentUsername", "password");
         when(userRepository.findUserByUsername("nonexistentUsername")).thenReturn(Optional.empty());
 
         // Act & Assert
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(authAttempt));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(authAttemptDTO));
         assertEquals("Username not found.", exception.getMessage());
 
         // Verify that userRepository methods were called
@@ -112,11 +112,11 @@ class AuthServiceTest {
     @Test
     void testLogin_IncorrectPassword() {
         // Arrange
-        AuthAttempt authAttempt = new AuthAttempt("existingUsername", "wrongPassword");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("existingUsername", "wrongPassword");
         when(userRepository.findUserByUsername("existingUsername")).thenReturn(Optional.of(new User("existingUsername", "password")));
 
         // Act & Assert
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(authAttempt));
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(authAttemptDTO));
         assertEquals("Incorrect password.", exception.getMessage());
 
         // Verify that userRepository methods were called

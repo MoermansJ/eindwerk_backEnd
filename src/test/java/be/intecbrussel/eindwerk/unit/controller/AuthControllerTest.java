@@ -1,7 +1,7 @@
 package be.intecbrussel.eindwerk.unit.controller;
 
 import be.intecbrussel.eindwerk.controller.AuthController;
-import be.intecbrussel.eindwerk.dto.AuthAttempt;
+import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
 import be.intecbrussel.eindwerk.service.AuthService;
@@ -47,14 +47,14 @@ public class AuthControllerTest {
     void testRegisterSuccess() throws Exception {
         // Mocking the registration behavior in AuthService
         User mockUser = new User("username", "password");
-        when(authService.register(any(AuthAttempt.class))).thenReturn(mockUser);
+        when(authService.register(any(AuthAttemptDTO.class))).thenReturn(mockUser);
 
         // Creating a sample AuthAttempt
-        AuthAttempt authAttempt = new AuthAttempt("username", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("username", "password");
 
         // Performing the POST request
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .content(asJsonString(authAttempt))
+                        .content(asJsonString(authAttemptDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -62,14 +62,14 @@ public class AuthControllerTest {
     @Test
     void testRegisterFailure() throws Exception {
         // Mocking the registration behavior in AuthService to throw an exception
-        when(authService.register(any(AuthAttempt.class))).thenThrow(new RuntimeException("Registration failed."));
+        when(authService.register(any(AuthAttemptDTO.class))).thenThrow(new RuntimeException("Registration failed."));
 
         // Creating a sample AuthAttempt
-        AuthAttempt authAttempt = new AuthAttempt("username", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("username", "password");
 
         // Performing the POST request
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .content(asJsonString(authAttempt))
+                        .content(asJsonString(authAttemptDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
@@ -81,11 +81,11 @@ public class AuthControllerTest {
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(mockUser));
 
         // Creating a sample AuthAttempt
-        AuthAttempt authAttempt = new AuthAttempt("username", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("username", "password");
 
         // Performing the POST request
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .content(asJsonString(authAttempt))
+                        .content(asJsonString(authAttemptDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -94,15 +94,15 @@ public class AuthControllerTest {
     void testLoginFailureUserNotFound() throws Exception {
         // Mocking the login behavior in AuthService to throw an EntityNotFoundException
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.empty());
-        when(authService.login(any(AuthAttempt.class))).thenThrow(new RuntimeException("Log in failed."));
+        when(authService.login(any(AuthAttemptDTO.class))).thenThrow(new RuntimeException("Log in failed."));
 
 
         // Creating a sample AuthAttempt
-        AuthAttempt authAttempt = new AuthAttempt("username", "password");
+        AuthAttemptDTO authAttemptDTO = new AuthAttemptDTO("username", "password");
 
         // Performing the POST request
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .content(asJsonString(authAttempt))
+                        .content(asJsonString(authAttemptDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }

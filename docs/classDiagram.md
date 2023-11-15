@@ -9,8 +9,8 @@ class AuthController {
 	- authService : AuthService
 
 	+ AuthController(authService : AuthService)
-	+ register(authAttempt : AuthAttempt) : ResponseEntity
-	+ login(authAttempt: AuthAttempt) : ResponseEntity
+	+ register(authAttemptDTO : AuthAttempt) : ResponseEntity
+	+ login(authAttemptDTO: AuthAttempt) : ResponseEntity
 }
 
 @enduml
@@ -25,8 +25,8 @@ class AuthService {
 	- userRepository : UserRepository
 
 	+ AuthService(userRepository : UserRepository)
-	+ register(authAttempt : AuthAttempt) : User
-	+ login(authAttempt : AuthAttempt) : User
+	+ register(authAttemptDTO : AuthAttempt) : User
+	+ login(authAttemptDTO : AuthAttempt) : User
 }
 
 @enduml

@@ -12,7 +12,7 @@ Control UserRepository as userrepository
 frontend -> authcontroller : POST /auth/register : ResponseEntity
 activate authcontroller
 
-authcontroller -> authservice : register(authAttempt: AuthAttempt) : User
+authcontroller -> authservice : register(authAttemptDTO: AuthAttempt) : User
 activate authservice
 
 authservice -> userrepository : findUserByUsername(username : String) : Opt<User>
@@ -54,7 +54,7 @@ Control UserRepository as userrepository
 frontend -> authcontroller : POST /auth/login : ResponseEntity
 activate authcontroller
 
-authcontroller -> authservice : login(authAttempt : AuthAttempt) : ResponseEntity
+authcontroller -> authservice : login(authAttemptDTO : AuthAttempt) : ResponseEntity
 activate authservice
 
 

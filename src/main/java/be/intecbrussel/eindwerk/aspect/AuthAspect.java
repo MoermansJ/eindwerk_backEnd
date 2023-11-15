@@ -1,6 +1,5 @@
 package be.intecbrussel.eindwerk.aspect;
 
-import be.intecbrussel.eindwerk.dto.AuthAttempt;
 import be.intecbrussel.eindwerk.logger.FileLogger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
