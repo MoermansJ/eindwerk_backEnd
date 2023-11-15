@@ -1,12 +1,8 @@
-[2023-11-15 11:21] : Attempting to log in: abcdefg
-[2023-11-15 11:21] : Log in attempt successful: abcdefg
-[2023-11-15 11:21] : Log in attempt concluded: abcdefg
-[2023-11-15 11:52] : Attempting registration: aza
-[2023-11-15 11:52] : Registration failed: aza
-[2023-11-15 11:52] : EXCEPTION: Password must be at least 7 characters.
-[2023-11-15 11:52] : Attempting registration: aza
-[2023-11-15 11:52] : Registration failed: aza
-[2023-11-15 11:52] : EXCEPTION: Password must be at least 7 characters.
-[2023-11-15 11:53] : Attempting registration: aza
-[2023-11-15 11:53] : Registration failed: aza
-[2023-11-15 11:53] : EXCEPTION: Password must be at least 7 characters.
+[2023-11-15 13:40] : Attempting registration: AuthAttempt(username=bbbbbbbbbbbbb, password=b)
+[2023-11-15 13:40] : Registration failed: Password must be at least 7 characters.
+[2023-11-15 13:40] : Attempting registration: AuthAttempt(username=a, password=b)
+[2023-11-15 13:40] : Registration failed: That username is already registered.
+[2023-11-15 13:40] : Attempting registration: AuthAttempt(username=aaaaaaa, password=zzzzzzzzzzzzzzzzzzzz)
+[2023-11-15 13:40] : Registration failed: That username is already registered.
+[2023-11-15 13:40] : Attempting registration: AuthAttempt(username=aaaaaaaaaaaaaa, password=zzzzzzzzzzzzzzzzzzzz)
+[2023-11-15 13:40] : Registration complete: AuthAttempt(username=aaaaaaaaaaaaaa, password=zzzzzzzzzzzzzzzzzzzz)
