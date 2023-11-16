@@ -1,5 +1,26 @@
 # Flowchart diagrams
 
+<!-- ================================================================================================= -->
+
+## validateToken
+
+```plantuml
+@startuml
+start
+
+:Token gets sent to the backend;
+:Parse claims;
+if (Evaluate token expiration) then (expired)
+:return false;
+stop
+else(not expired)
+:return true;
+stop
+@enduml
+```
+
+<!-- ================================================================================================= -->
+
 ## register
 
 ```plantuml
@@ -8,14 +29,17 @@ start
 
 :register attempt;
 if (username + password validation) then (fail)
+:throw exception;
 stop
 else(pass)
 
-:add account to DB;
+:Hash password + add user to DB;
 
 stop
 @enduml
 ```
+
+<!-- ================================================================================================= -->
 
 ## log in
 
@@ -25,10 +49,11 @@ start
 
 :log in attempt;
 if (username + password validation) then (fail)
+:throw exception;
 stop
 else(pass)
 
-:return account from DB;
+:Create & return token;
 
 stop
 @enduml

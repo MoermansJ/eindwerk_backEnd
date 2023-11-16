@@ -56,10 +56,10 @@ public class AuthService {
         }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authAttemptDTO.getUsername(), authAttemptDTO.getPassword()));
-        String email = authentication.getName();
-        User user = new User(email, "");
+        String username = authentication.getName();
+        User user = new User(username, "");
         String token = jwtUtil.createToken(user, "NO ROLES IN THIS APPLICATION YET");
-        AuthTokenDTO authTokenDTO = new AuthTokenDTO(email, token);
+        AuthTokenDTO authTokenDTO = new AuthTokenDTO(username, token);
 
         return authTokenDTO;
     }
