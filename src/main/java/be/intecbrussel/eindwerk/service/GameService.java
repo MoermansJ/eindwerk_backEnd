@@ -1,7 +1,14 @@
 package be.intecbrussel.eindwerk.service;
 
+import be.intecbrussel.eindwerk.dto.GameStateRequest;
+import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
+import be.intecbrussel.eindwerk.tetris.piece.PieceI;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 @Service
@@ -10,19 +17,25 @@ public class GameService {
     private int y = 0;
     private static String[][] tileMap = createTileMap();
 
-
-    public String[][] getGameState(Boolean computerMove, String userInput) {
+    public String[][] getGameState(GameStateRequest gameStateRequest) {
+        Boolean computerMove = gameStateRequest.getComputerMove();
+        String userInput = gameStateRequest.getKey();
         String[][] newTileMap = tileMap;
 
+        //playermove
         if (!userInput.equals("NO_KEY")) {
             newTileMap = this.movePlayer(newTileMap, userInput);
         }
 
-        if (computerMove) {
-            newTileMap = this.moveComputer(newTileMap);
-        }
+        //computermove
+//        if (computerMove) {
+//            newTileMap = this.moveComputer(newTileMap);
+//        }
 
-        return newTileMap;
+        //checking & removing complete lines
+//        newTileMap = this.clearCompleteLines(newTileMap);
+
+        return new PieceI().getShape();
     }
 
 
@@ -108,4 +121,34 @@ public class GameService {
 
         return true;
     }
+
+    private String[][] clearCompleteLines(String[][] tileMap) {
+        int rows = tileMap[0].length;
+        int columns = tileMap.length;
+
+        for (int y = 0; y < rows; y++) {
+            if (isCompleteLine(tileMap, y, columns)) {
+                for (int x = 0; x < columns; x++) {
+                    tileMap[x][y] = "_";
+                }
+            }
+        }
+
+        return tileMap;
+    }
+
+    private boolean isCompleteLine(String[][] tileMap, int row, int columns) {
+        for (int x = 0; x < columns; x++) {
+            if (tileMap[x][row].equals("_")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void resetGrid() {
+        tileMap = createTileMap();
+    }
 }
+
+

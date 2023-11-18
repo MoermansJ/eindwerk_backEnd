@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS).permitAll())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/*").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/game/*").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/test/*").permitAll())
                 //.authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").hasAuthority("ROLE_USER"))
 //                .authorizeHttpRequests(auth -> auth.requestMatchers("/book/adm/**").hasAuthority("ROLE_ADMIN"))
 //                .authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated())

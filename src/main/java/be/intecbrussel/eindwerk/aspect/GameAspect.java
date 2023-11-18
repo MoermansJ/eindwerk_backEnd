@@ -9,31 +9,16 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class AuthAspect {
+public class GameAspect {
     @Autowired
     private FileLogger fileLogger;
 
-
-    //login
-    @Around("execution(* be.intecbrussel.eindwerk.service.AuthService.login(..))")
-    public Object aroundLogin(ProceedingJoinPoint joinPoint) throws Throwable {
-        return logMethodExecution(joinPoint, "Attempting login", "Login complete", "Login failed");
+    
+    //getGameState
+    @Around("execution(* be.intecbrussel.eindwerk.service.GameService.getGameState(..))")
+    public Object aroundGetGameState(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logMethodExecution(joinPoint, "Attempting getGameState", "getGameState complete", "getGameState failed");
     }
-
-
-    //register
-    @Around("execution(* be.intecbrussel.eindwerk.service.AuthService.register(..))")
-    public Object aroundRegister(ProceedingJoinPoint joinPoint) throws Throwable {
-        return logMethodExecution(joinPoint, "Attempting registration", "Registration complete", "Registration failed");
-    }
-
-
-    //validateToken
-    @Around("execution(* be.intecbrussel.eindwerk.service.AuthService.validateToken(..))")
-    public Object aroundValidateToken(ProceedingJoinPoint joinPoint) throws Throwable {
-        return logMethodExecution(joinPoint, "Attempting token validation", "Token validation complete", "Token validation failed");
-    }
-
 
     //log method
     private <T> Object logMethodExecution(ProceedingJoinPoint joinPoint, String beforeMessage, String afterMessage, String errorMessage) throws Throwable {
@@ -56,4 +41,3 @@ public class AuthAspect {
         }
     }
 }
-
