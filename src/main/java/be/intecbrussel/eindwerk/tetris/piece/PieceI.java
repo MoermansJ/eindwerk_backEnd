@@ -1,5 +1,8 @@
 package be.intecbrussel.eindwerk.tetris.piece;
 
+import lombok.Data;
+
+@Data
 public class PieceI implements ITetrisPiece {
     private String[][] shape = {
             {"_", "5", "_", "_"},
@@ -7,9 +10,4 @@ public class PieceI implements ITetrisPiece {
             {"_", "5", "_", "_"},
             {"_", "5", "_", "_"}
     };
-
-    @Override
-    public String[][] getShape() {
-        return shape;
-    }
 }
