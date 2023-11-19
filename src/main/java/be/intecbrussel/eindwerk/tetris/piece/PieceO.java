@@ -2,10 +2,11 @@ package be.intecbrussel.eindwerk.tetris.piece;
 
 import lombok.Data;
 
-@Data
-public class PieceO implements ITetrisPiece {
-    private String[][] shape = {
-            {"2", "2"},
-            {"2", "2"},
-    };
+public class PieceO extends TetrisPiece {
+    public PieceO() {
+        super(new String[][]{
+                {"2", "2"},
+                {"2", "2"},
+        });
+    }
 }

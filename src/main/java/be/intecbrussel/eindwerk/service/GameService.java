@@ -8,116 +8,116 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 import java.util.Arrays;
 
 @Service
 public class GameService {
-    private int x = 3;
-    private int y = 0;
-    private static String[][] tileMap = createTileMap();
-    private static ITetrisPiece currentPiece;
+    private static int currentPieceTopLeftX;
+    private static int currentPieceTopLeftY;
+    private static TetrisPiece piece = new PieceZ();
+
+    private static String[][] tileMap = createEmptyTileMap(); //logic to insert new piece is inside this method
+    private static boolean firstGame = true;
+
+    private enum Direction {
+        LEFT, RIGHT, DOWN, UP
+    }
 
     public String[][] getGameState(GameStateRequest gameStateRequest) {
+        if (firstGame) {
+            insertPiece(0, 0);
+            firstGame = false;
+        }
+
+//game loop logic
         Boolean computerMove = gameStateRequest.getComputerMove();
         String userInput = gameStateRequest.getKey();
         String[][] newTileMap = tileMap;
 
-        if (currentPiece == null) currentPiece = new PieceI();
-
         //playermove
-        if (!userInput.equals("NO_KEY_PRESSED")) {
-//            currentPiece = this.movePlayer(newTileMap, userInput);
-            currentPiece.setShape(this.rotatePiece(currentPiece));
+        if (!userInput.equals("NO_KEY")) {
+            movePlayer(gameStateRequest.getKey());
+//            newTileMap = this.clearPiece(newTileMap, currentPiece.getShape());
+//            newTileMap = this.movePlayer(newTileMap, userInput);
         }
 
-        //computermove
-//        if (computerMove) {
-//            newTileMap = this.moveComputer(newTileMap);
-//        }
 
-        //checking & removing complete lines
-//        newTileMap = this.clearCompleteLines(newTileMap);
-
-        return currentPiece.getShape();
+        return newTileMap;
     }
 
-    private String[][] rotatePiece(ITetrisPiece piece) {
-        String[][] originalShape = piece.getShape();
-        int rows = originalShape.length;
-        int cols = originalShape[0].length;
+    public static void insertPiece(int x, int y) {
+        int pieceRows = piece.getShape().length;
+        int pieceCols = piece.getShape()[0].length;
 
-        // Create a new 2D array for the rotated piece
-        String[][] rotatedShape = new String[cols][rows];
-
-        // Perform the rotation
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                rotatedShape[j][rows - 1 - i] = originalShape[i][j];
+        for (int i = 0; i < pieceRows; i++) {
+            for (int j = 0; j < pieceCols; j++) {
+                tileMap[x + i][y + j] = piece.getShape()[i][j];
             }
         }
-
-        return rotatedShape;
     }
 
-
-    private ITetrisPiece movePlayer(String[][] tileMap, String key) {
+    private void movePlayer(String key) {
         switch (key) {
             case "ARROWLEFT":
-                if (this.x > 0) {
-                    tileMap[x][y] = "_";    //clearing previous char
-                    this.x -= 1;
-                    tileMap[x][y] = "P";    //printing next char
-                }
+                movePiece(Direction.LEFT);
                 break;
             case "ARROWRIGHT":
-                if (this.x < tileMap.length - 1) {
-                    tileMap[x][y] = "_";    //clearing previous char
-                    this.x += 1;
-                    tileMap[x][y] = "P";    //printing next char
-                }
+                movePiece(Direction.RIGHT);
                 break;
             case "ARROWDOWN":
-                if (this.y < tileMap[x].length - 1) {
-                    tileMap[x][y] = "_";    //clearing previous char
-                    this.y += 1;
-                    tileMap[x][y] = "P";    //printing next char
-                }
+                movePiece(Direction.DOWN);
                 break;
             case "ARROWUP":
-                //REPLACE THIS LOGIC WITH LOGIC TO ROTATE THE BLOCK
-//                if (this.y > 0) {
-//                    tileMap[x][y] = "_";    //clearing previous char
-//                    this.y -= 1;
-//                    tileMap[x][y] = "P";    //printing next char
-//                }
+                piece.rotateShape();
+                movePiece(Direction.UP);
+                break;
         }
-
-        return new PieceZ();
     }
 
-
-    private String[][] moveComputer(String[][] tileMap) {
-        if (!canMoveDownOneRow()) {
-            //LOGIC TO STOP OR RESTART THE GAME
-            x = 3;
-            y = 0;
-            tileMap[x][y] = "P";
-            return tileMap;
-        }
-
-        //clearing previous char
-        tileMap[x][y] = "_";
-
-        //printing char one row down
-        this.y++;
-        tileMap[x][y] = "P";
-
-        return tileMap;
+    public static void movePiece(Direction direction) {
+        clearPiece();
+        printPiece(direction);
     }
 
+    private static void clearPiece() {
+        for (Point point : piece.getPoints()) {
+            int row = point.y;
+            int col = point.x;
 
-    private static String[][] createTileMap() {
+            if (row >= 0 && row < tileMap.length && col >= 0 && col < tileMap[0].length) {
+                tileMap[row][col] = "_";
+            }
+        }
+    }
+
+    private static void printPiece(Direction direction) {
+        // Calculate the new position after movement
+        int xOffset = (direction == Direction.RIGHT) ? 1 : (direction == Direction.LEFT) ? -1 : 0;
+        int yOffset = (direction == Direction.DOWN) ? 1 : 0;
+
+        // Update the coordinates of the TetrisPiece points
+        List<Point> updatedPoints = new ArrayList<>();
+        for (Point point : piece.getPoints()) {
+            updatedPoints.add(new Point(point.x + xOffset, point.y + yOffset));
+        }
+        piece.setPoints(updatedPoints);
+
+        //same logic as in clearPiece
+        for (Point point : piece.getPoints()) {
+            int row = point.y;
+            int col = point.x;
+
+            if (row >= 0 && row < tileMap.length && col >= 0 && col < tileMap[0].length) {
+                tileMap[row][col] = "P";
+            }
+        }
+    }
+
+    private static String[][] createEmptyTileMap() {
         String[][] tilemap = new String[7][7];
 
         //filling with _
@@ -125,51 +125,14 @@ public class GameService {
             Arrays.fill(strings, "_");
         }
 
-        //player starting position
-        int x = 3;
-        int y = 0;
-        tilemap[x][y] = "P";
-
         return tilemap;
     }
 
-    private boolean canMoveDownOneRow() {
-        int indexBelowCurrent = y + 1;
-
-        //if bottom boundary is reached OR if obstructed
-        if (indexBelowCurrent >= tileMap[x].length || !tileMap[x][indexBelowCurrent].equals("_")) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private String[][] clearCompleteLines(String[][] tileMap) {
-        int rows = tileMap[0].length;
-        int columns = tileMap.length;
-
-        for (int y = 0; y < rows; y++) {
-            if (isCompleteLine(tileMap, y, columns)) {
-                for (int x = 0; x < columns; x++) {
-                    tileMap[x][y] = "_";
-                }
-            }
-        }
-
-        return tileMap;
-    }
-
-    private boolean isCompleteLine(String[][] tileMap, int row, int columns) {
-        for (int x = 0; x < columns; x++) {
-            if (tileMap[x][row].equals("_")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static void resetGrid() {
-        tileMap = createTileMap();
+        tileMap = createEmptyTileMap();
+        firstGame = true;
+        currentPieceTopLeftX = 0;
+        currentPieceTopLeftY = 0;
     }
 }
 

@@ -17,13 +17,14 @@ import org.springframework.web.context.annotation.SessionScope;
 @RestController
 @RequestMapping("/game")
 class GameController {
+    //    private GameSession gameSession; //DOES NOT WORK - FIX OR REMOVE
     @Autowired
-    private GameSession gameSession;
+    private GameService gameService;
 
     @PostMapping("/getGameState")
     public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest) {
         try {
-            GameService gameService = gameSession.getGameService();
+//            GameService gameService = gameSession.getGameService();
             return ResponseEntity.ok(gameService.getGameState(gameStateRequest));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
