@@ -3,7 +3,6 @@ package be.intecbrussel.eindwerk.controller;
 import be.intecbrussel.eindwerk.dto.GameStateRequest;
 import be.intecbrussel.eindwerk.service.GameService;
 
-import be.intecbrussel.eindwerk.session.GameSession;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +16,12 @@ import org.springframework.web.context.annotation.SessionScope;
 @RestController
 @RequestMapping("/game")
 class GameController {
-    //    private GameSession gameSession; //DOES NOT WORK - FIX OR REMOVE
     @Autowired
     private GameService gameService;
 
     @PostMapping("/getGameState")
     public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest) {
         try {
-//            GameService gameService = gameSession.getGameService();
             return ResponseEntity.ok(gameService.getGameState(gameStateRequest));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

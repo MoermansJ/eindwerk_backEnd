@@ -17,7 +17,7 @@ public class TestController {
     @PostMapping("/resetGrid")
     public ResponseEntity resetGrid() {
         try {
-            gameService.resetGrid(); //void method
+//            gameService.resetGrid(); //void method
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

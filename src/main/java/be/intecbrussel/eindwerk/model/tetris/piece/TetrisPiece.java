@@ -1,22 +1,29 @@
-package be.intecbrussel.eindwerk.tetris.piece;
+package be.intecbrussel.eindwerk.model.tetris.piece;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public abstract class TetrisPiece {
     //properties
     protected String[][] shape;
+
+    @ElementCollection
     protected List<Point> points;
 
 
     //constructors
     public TetrisPiece(String[][] shape) {
         this.shape = shape;
-        this.points = this.getFilledCells(shape);
+        this.points = this.getCollisionPoints(shape);
     }
 
 
@@ -37,10 +44,10 @@ public abstract class TetrisPiece {
         }
 
         // Updating points
-        this.points = this.getFilledCells(rotatedShape);
+        this.points = this.getCollisionPoints(rotatedShape);
     }
 
-    public List<Point> getFilledCells(String[][] shape) {
+    public List<Point> getCollisionPoints(String[][] shape) {
         List<Point> filledCells = new ArrayList<>();
 
         for (int i = 0; i < shape.length; i++) {

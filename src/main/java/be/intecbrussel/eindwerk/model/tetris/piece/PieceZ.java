@@ -1,9 +1,15 @@
-package be.intecbrussel.eindwerk.tetris.piece;
+package be.intecbrussel.eindwerk.model.tetris.piece;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Entity
+@Data
 public class PieceZ extends TetrisPiece {
+    @Id
+    private Long id;
+
     public PieceZ() {
         super(new String[][]{
                 {"7", "7", "_"},
