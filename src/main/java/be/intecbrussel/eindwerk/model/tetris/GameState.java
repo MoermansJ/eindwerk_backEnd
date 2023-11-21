@@ -1,5 +1,6 @@
 package be.intecbrussel.eindwerk.model.tetris;
 
+import be.intecbrussel.eindwerk.model.tetris.piece.PieceZ;
 import be.intecbrussel.eindwerk.model.tetris.piece.TetrisPiece;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,9 @@ public class GameState {
     @OneToOne
     private TileMap tileMap;
 
+    @OneToOne
+    private TetrisPiece tetrisPiece;
+
     private enum Direction {
         LEFT, RIGHT, DOWN
     }
@@ -28,6 +32,8 @@ public class GameState {
     //constructors
     public GameState() {
         this.tileMap = new TileMap(16, 32);
+        this.tetrisPiece = new PieceZ();
+        tileMap.insertPiece();
     }
 
 

@@ -12,8 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Entity
 public abstract class TetrisPiece {
     //properties
+    @Id
+    protected Long id;
+    
     protected String[][] shape;
 
     @ElementCollection
@@ -47,7 +51,7 @@ public abstract class TetrisPiece {
         this.points = this.getCollisionPoints(rotatedShape);
     }
 
-    public List<Point> getCollisionPoints(String[][] shape) {
+    protected List<Point> getCollisionPoints(String[][] shape) {
         List<Point> filledCells = new ArrayList<>();
 
         for (int i = 0; i < shape.length; i++) {
