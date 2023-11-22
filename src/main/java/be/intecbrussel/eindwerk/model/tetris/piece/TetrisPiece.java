@@ -1,14 +1,13 @@
 package be.intecbrussel.eindwerk.model.tetris.piece;
 
-import be.intecbrussel.eindwerk.model.tetris.GameState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -29,6 +28,7 @@ public abstract class TetrisPiece {
 
     protected int width;
 
+    protected int rotationCounter;
 
     //constructors
     public TetrisPiece(String[][] shape) {
@@ -43,30 +43,32 @@ public abstract class TetrisPiece {
 
 
     //custom methods - with implementation
-    public void rotateShape() {
-        String[][] originalShape = convertShapeListTo2DArray(this.shape, this.width);
+    public String[][] rotateShape(String[][] originalShape) {
+//        String[][] originalShape = convertShapeListTo2DArray(shape, this.width);
+
+        this.rotationCounter++;
         int rows = originalShape.length;
         int cols = originalShape[0].length;
 
         // Create a new 2D array for the rotated shape
         String[][] rotatedShape = new String[cols][rows];
 
-        // Perform the rotation
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                rotatedShape[j][rows - 1 - i] = originalShape[i][j];
+        for (int r = 0; r < rotationCounter; r++) { // Amount of rotations
+            for (int i = 0; i < rows; i++) { // Perform the rotation
+                for (int j = 0; j < cols; j++) {
+                    rotatedShape[j][rows - 1 - i] = originalShape[i][j];
+                }
             }
         }
 
-        // Updating points
-        this.points = this.getCollisionPoints(rotatedShape);
+        return rotatedShape;
     }
 
-    protected List<Point> getCollisionPoints(String[][] shape) {
+    public List<Point> getCollisionPoints(String[][] shape) {
         List<Point> filledCells = new ArrayList<>();
 
         for (int i = 0; i < shape.length; i++) {
-            for (int j = 0; j < shape[0].length; j++) {
+            for (int j = 0; j < shape[i].length; j++) {
                 if (!shape[i][j].equals("_")) {
                     filledCells.add(new Point(j, i));
                 }
@@ -76,7 +78,23 @@ public abstract class TetrisPiece {
         return filledCells;
     }
 
-    protected static String[][] convertShapeListTo2DArray(List<String> shapeList, int width) {
+    public void rotatePoints(List<Point> oldPoints) {
+        String[][] oldShape = convertShapeListTo2DArray(this.shape, this.width);
+        String[][] rotatedShape = this.rotateShape(oldShape);
+        List<Point> newShapePoints = getCollisionPoints(rotatedShape);
+
+        for (int i = 0; i < this.points.size(); i++) {
+            Point oldShapePoint = oldPoints.get(i);
+            Point newShapePoint = newShapePoints.get(i);
+
+            int deltaX = newShapePoint.x - oldShapePoint.x;
+            int deltaY = newShapePoint.y - oldShapePoint.y;
+
+            this.points.set(i, new Point(points.get(i).x + deltaX, points.get(i).y + deltaY));
+        }
+    }
+
+    public static String[][] convertShapeListTo2DArray(List<String> shapeList, int width) {
         int height = shapeList.size() / width;
         String[][] result = new String[width][height];
 
@@ -92,13 +110,8 @@ public abstract class TetrisPiece {
         return result;
     }
 
-    protected static List<String> convertShape2DArrayToList(String[][] shape) {
+    public static List<String> convertShape2DArrayToList(String[][] shape) {
         List<String> result = new ArrayList<>();
-
-        if (shape == null || shape.length == 0 || shape[0].length == 0) {
-            // Handle invalid shape as needed
-            return result;
-        }
 
         int height = shape.length;
         int width = shape[0].length;
@@ -111,6 +124,4 @@ public abstract class TetrisPiece {
 
         return result;
     }
-
-
 }

@@ -49,7 +49,7 @@ public class GameState {
 
     //custom methods
     public void movePlayer(String key) {
-        switch (key) {
+        switch (key) { // TO DO: streamline & bundle this logic
             case "ARROWLEFT": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.LEFT);
 
@@ -85,20 +85,31 @@ public class GameState {
             }
             case "ARROWUP":
                 this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-                this.currentPiece.rotateShape();
+
+                // BIG MESS - CLEAN UP!
+                String[][] arrShape = TetrisPiece.convertShapeListTo2DArray(this.currentPiece.getShape(), this.currentPiece.getWidth());
+                List<Point> oldPoints = this.currentPiece.getCollisionPoints(arrShape);
+                String[][] arrNewShape = this.currentPiece.rotateShape(arrShape);
+                List<Point> newPoints = this.currentPiece.getCollisionPoints(arrNewShape);
+                List<String> listNewShape = TetrisPiece.convertShape2DArrayToList(arrNewShape);
+                this.currentPiece.setShape(listNewShape);
+
+                this.currentPiece.rotatePoints(oldPoints);
+
+                
                 this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
                 break;
         }
     }
 
-    public void moveComputer() {
-        List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
+    public void moveComputer() { // Computermove is currently disabled from having any effect on the game; UNCOMMENT TO ENABLE!
+//        List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
 
-        if (isOutOfBounds(updatedPoints))
-            return;
+//        if (isOutOfBounds(updatedPoints))
+//            return;
 
         this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-        this.currentPiece.setPoints(updatedPoints);
+//        this.currentPiece.setPoints(updatedPoints);
         this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
     }
 
