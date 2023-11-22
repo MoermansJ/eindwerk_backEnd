@@ -45,7 +45,13 @@ public abstract class TetrisPiece {
 
 
     //custom methods - with implementation
-    public String[][] rotateShape(String[][] originalShape) {
+    public void rotate() {
+        String[][] shape = convertShapeListTo2DArray(this.shape, width);
+        this.shape = convertShape2DArrayToList(this.rotateShape(shape)); //to do: refactor rotateShape to use a List as a parameter
+        points = this.rotatePoints(points);
+    }
+
+    private String[][] rotateShape(String[][] originalShape) {
 //        String[][] originalShape = convertShapeListTo2DArray(shape, this.width);
 
         this.rotationCounter++;
@@ -80,7 +86,9 @@ public abstract class TetrisPiece {
         return filledCells;
     }
 
-    public void rotatePoints(List<Point> oldPoints) {
+    private List<Point> rotatePoints(List<Point> oldPoints) {
+        List<Point> rotatedPoints = new ArrayList<>();
+
         String[][] oldShape = convertShapeListTo2DArray(this.shape, this.width);
         String[][] rotatedShape = this.rotateShape(oldShape);
         List<Point> newShapePoints = getCollisionPoints(rotatedShape);
@@ -92,8 +100,10 @@ public abstract class TetrisPiece {
             int deltaX = newShapePoint.x - oldShapePoint.x;
             int deltaY = newShapePoint.y - oldShapePoint.y;
 
-            this.points.set(i, new Point(points.get(i).x + deltaX, points.get(i).y + deltaY));
+            rotatedPoints.add(new Point(points.get(i).x + deltaX, points.get(i).y + deltaY));
         }
+
+        return rotatedPoints;
     }
 
     public static String[][] convertShapeListTo2DArray(List<String> shapeList, int width) {

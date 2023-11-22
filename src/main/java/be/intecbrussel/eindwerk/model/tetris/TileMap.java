@@ -51,7 +51,7 @@ public class TileMap {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < (height); y++) {
-                emptyTileMap.add(new Tile(x, y, "| |"));
+                emptyTileMap.add(new Tile(x, y, "white"));
             }
         }
 

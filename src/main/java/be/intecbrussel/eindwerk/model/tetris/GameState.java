@@ -85,16 +85,7 @@ public class GameState {
             }
             case "ARROWUP":
                 tileMap.clearTetrisPiece(currentPiece);
-                // BIG MESS - CLEAN UP!
-                String[][] arrShape = TetrisPiece.convertShapeListTo2DArray(this.currentPiece.getShape(), this.currentPiece.getWidth());
-                List<Point> oldPoints = this.currentPiece.getCollisionPoints(arrShape);
-                String[][] arrNewShape = this.currentPiece.rotateShape(arrShape);
-                List<Point> newPoints = this.currentPiece.getCollisionPoints(arrNewShape);
-                List<String> listNewShape = TetrisPiece.convertShape2DArrayToList(arrNewShape);
-                this.currentPiece.setShape(listNewShape);
-
-                this.currentPiece.rotatePoints(oldPoints);
-
+                currentPiece.rotate();
                 tileMap.paintTetrisPiece(currentPiece);
                 break;
         }
