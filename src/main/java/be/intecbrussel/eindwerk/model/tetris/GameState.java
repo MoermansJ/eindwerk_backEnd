@@ -56,9 +56,9 @@ public class GameState {
                 if (isOutOfBounds(updatedPoints))
                     return;
 
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-                this.currentPiece.setPoints(updatedPoints);
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
+                tileMap.clearTetrisPiece(currentPiece);
+                currentPiece.setPoints(updatedPoints);
+                tileMap.paintTetrisPiece(currentPiece);
                 break;
             }
             case "ARROWRIGHT": {
@@ -67,9 +67,9 @@ public class GameState {
                 if (isOutOfBounds(updatedPoints))
                     return;
 
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-                this.currentPiece.setPoints(updatedPoints);
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
+                tileMap.clearTetrisPiece(currentPiece);
+                currentPiece.setPoints(updatedPoints);
+                tileMap.paintTetrisPiece(currentPiece);
                 break;
             }
             case "ARROWDOWN": {
@@ -78,14 +78,13 @@ public class GameState {
                 if (isOutOfBounds(updatedPoints))
                     return;
 
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-                this.currentPiece.setPoints(updatedPoints);
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
+                tileMap.clearTetrisPiece(currentPiece);
+                currentPiece.setPoints(updatedPoints);
+                tileMap.paintTetrisPiece(currentPiece);
                 break;
             }
             case "ARROWUP":
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-
+                tileMap.clearTetrisPiece(currentPiece);
                 // BIG MESS - CLEAN UP!
                 String[][] arrShape = TetrisPiece.convertShapeListTo2DArray(this.currentPiece.getShape(), this.currentPiece.getWidth());
                 List<Point> oldPoints = this.currentPiece.getCollisionPoints(arrShape);
@@ -96,8 +95,7 @@ public class GameState {
 
                 this.currentPiece.rotatePoints(oldPoints);
 
-                
-                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
+                tileMap.paintTetrisPiece(currentPiece);
                 break;
         }
     }
@@ -108,9 +106,9 @@ public class GameState {
 //        if (isOutOfBounds(updatedPoints))
 //            return;
 
-        this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
-//        this.currentPiece.setPoints(updatedPoints);
-        this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
+        tileMap.clearTetrisPiece(currentPiece);
+        //this.currentPiece.setPoints(updatedPoints);
+        tileMap.paintTetrisPiece(currentPiece);
     }
 
     public List<Point> movePoints(TetrisPiece tetrisPiece, GameState.Direction direction) {

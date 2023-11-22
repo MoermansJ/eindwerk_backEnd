@@ -30,6 +30,8 @@ public abstract class TetrisPiece {
 
     protected int rotationCounter;
 
+    protected String content;
+
     //constructors
     public TetrisPiece(String[][] shape) {
         this(convertShape2DArrayToList(shape), shape[0].length);

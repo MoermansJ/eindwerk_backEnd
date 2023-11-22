@@ -10,6 +10,8 @@ public class PieceZ extends TetrisPiece {
     @Id
     private Long id;
 
+    private String content = "red";
+
     public PieceZ() {
         super(new String[][]{
                 {"7", "7", "_"},

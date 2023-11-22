@@ -42,7 +42,7 @@ public class TileMap {
         this.height = height;
         this.tiles = this.createEmptyTileMap(width, height);
         this.currentPiece = tetrisPiece;
-        this.updateTileMap(tetrisPiece.getPoints(), "P"); //inserting first shape
+        this.paintTetrisPiece(tetrisPiece); //inserting first shape
     }
 
     //custom methods
@@ -58,10 +58,20 @@ public class TileMap {
         return emptyTileMap;
     }
 
-    public void updateTileMap(List<Point> points, String content) {
+    public void clearTetrisPiece(TetrisPiece tetrisPiece) {
+        List<Tile> matchingTiles = this.getMatchingTiles(tetrisPiece);
+        matchingTiles.forEach(mt -> mt.setContent("white"));
+    }
+
+    public void paintTetrisPiece(TetrisPiece tetrisPiece) {
+        List<Tile> matchingTiles = this.getMatchingTiles(tetrisPiece);
+        matchingTiles.forEach(mt -> mt.setContent(tetrisPiece.getContent()));
+    }
+
+    private List<Tile> getMatchingTiles(TetrisPiece tetrisPiece) {
         List<Tile> matchingTiles = new ArrayList<>();
 
-        for (Point p : points) {
+        for (Point p : tetrisPiece.getPoints()) {
             List<Tile> matchingTilesForPoint = tiles.stream()
                     .filter(t -> t.getX() == p.x && t.getY() == p.y)
                     .toList();
@@ -69,6 +79,7 @@ public class TileMap {
             matchingTiles.addAll(matchingTilesForPoint);
         }
 
-        matchingTiles.forEach(mt -> mt.setContent(content));
+        return matchingTiles;
     }
+
 }
