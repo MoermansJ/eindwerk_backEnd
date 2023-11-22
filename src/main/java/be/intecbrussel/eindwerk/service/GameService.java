@@ -12,22 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.awt.Point;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 public class GameService {
     //properties
     private GameState gameState;
 
-    private String[][] matrix;
-    private static boolean firstGame = true;
+    private GameStateMemoryService gameStateMemoryService;
 
 
-    //constructor
-    public GameService() {
+    //constructors
+    public GameService(GameStateMemoryService gameStateMemoryService) {
+        this.gameStateMemoryService = gameStateMemoryService;
+
         if (gameState == null) {
             this.gameState = new GameState();
         }
@@ -40,10 +43,21 @@ public class GameService {
         Boolean computerMove = gameStateRequest.getComputerMove();
         String userInput = gameStateRequest.getKey();
 
+        Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameState(); //find another way to check if there's a record so i don't have to use silly optionals
+
+        if (oDbGameState.isPresent())
+            this.gameState = oDbGameState.get();
+
         //playermove
-        if (!userInput.equals("NO_KEY")) {
+        if (!userInput.equals("NO_KEY"))
             gameState.movePlayer(gameStateRequest.getKey());
-        }
+
+        //computermove
+        if (computerMove)
+            gameState.moveComputer();
+
+        gameState.setTimeStamp(LocalDateTime.now());
+        gameStateMemoryService.save(gameState);
 
         return this.gameState;
     }

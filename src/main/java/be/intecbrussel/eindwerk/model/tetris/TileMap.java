@@ -22,25 +22,27 @@ import java.util.stream.Collectors;
 public class TileMap {
     //properties
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "session_id") //in case of emergency
     private long id;
 
     private int width;
     private int height;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<Tile> tiles;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private TetrisPiece currentPiece;
 
 
     //constructors
-    public TileMap(int width, int height) {
+    public TileMap(int width, int height, TetrisPiece tetrisPiece) {
         this.width = width;
         this.height = height;
         this.tiles = this.createEmptyTileMap(width, height);
-        this.currentPiece = new PieceZ();
+        this.currentPiece = tetrisPiece;
+        this.updateTileMap(tetrisPiece.getPoints(), "P"); //inserting first shape
     }
 
     //custom methods
@@ -56,17 +58,17 @@ public class TileMap {
         return emptyTileMap;
     }
 
-    public void insertPiece() {
+    public void updateTileMap(List<Point> points, String content) {
         List<Tile> matchingTiles = new ArrayList<>();
 
-        for (Point p : currentPiece.getPoints()) {
+        for (Point p : points) {
             List<Tile> matchingTilesForPoint = tiles.stream()
                     .filter(t -> t.getX() == p.x && t.getY() == p.y)
-                    .collect(Collectors.toList());
+                    .toList();
 
             matchingTiles.addAll(matchingTilesForPoint);
         }
 
-        matchingTiles.forEach(mt -> mt.setContent("P"));
+        matchingTiles.forEach(mt -> mt.setContent(content));
     }
 }

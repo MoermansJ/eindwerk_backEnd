@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    //uncomment and make it work, it's been giving me trouble with the H2 database... something about mapping to the same domain
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
@@ -47,10 +49,11 @@ public class SecurityConfig {
                         }
                 ))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS).permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/*").permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/game/*").permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/test/*").permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS).permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/*").permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers("/game/*").permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers("/test/*").permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers("/*").permitAll())
                 //.authorizeHttpRequests(auth -> auth.requestMatchers("/user/**").hasAuthority("ROLE_USER"))
 //                .authorizeHttpRequests(auth -> auth.requestMatchers("/book/adm/**").hasAuthority("ROLE_ADMIN"))
 //                .authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated())

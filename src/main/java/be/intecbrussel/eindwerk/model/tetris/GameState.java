@@ -1,11 +1,18 @@
 package be.intecbrussel.eindwerk.model.tetris;
 
+import be.intecbrussel.eindwerk.model.tetris.piece.PieceL;
 import be.intecbrussel.eindwerk.model.tetris.piece.PieceZ;
 import be.intecbrussel.eindwerk.model.tetris.piece.TetrisPiece;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+
+import java.awt.Point;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @Data
@@ -14,77 +21,115 @@ import lombok.NoArgsConstructor;
 public class GameState {
     //properties
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
 
-//    private TetrisPiece piece;
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     private TileMap tileMap;
 
-    @OneToOne
-    private TetrisPiece tetrisPiece;
+    @OneToOne(cascade = CascadeType.MERGE)
+    private TetrisPiece currentPiece;
 
-    private enum Direction {
+    private LocalDateTime timeStamp;
+
+    public enum Direction {
         LEFT, RIGHT, DOWN
     }
 
 
     //constructors
     public GameState() {
-        this.tileMap = new TileMap(16, 32);
-        this.tetrisPiece = new PieceZ();
-        tileMap.insertPiece();
+        if (currentPiece == null)
+            this.currentPiece = new PieceZ();
+
+        if (this.tileMap == null)
+            this.tileMap = new TileMap(16, 16, currentPiece);
     }
 
 
     //custom methods
     public void movePlayer(String key) {
         switch (key) {
-            case "ARROWLEFT":
-                paintPoints("_"); //clearing old
-                movePoints(Direction.LEFT);//moving coordinates based on user input
-                paintPoints("P"); //painting new
+            case "ARROWLEFT": {
+                List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.LEFT);
+
+                if (isOutOfBounds(updatedPoints))
+                    return;
+
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
+                this.currentPiece.setPoints(updatedPoints);
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
                 break;
-            case "ARROWRIGHT":
-                paintPoints("_"); //clearing old
-                movePoints(Direction.RIGHT);//moving coordinates based on user input
-                paintPoints("P"); //painting new
+            }
+            case "ARROWRIGHT": {
+                List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.RIGHT);
+
+                if (isOutOfBounds(updatedPoints))
+                    return;
+
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
+                this.currentPiece.setPoints(updatedPoints);
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
                 break;
-            case "ARROWDOWN":
-                paintPoints("_"); //clearing old
-                movePoints(Direction.DOWN);//moving coordinates based on user input
-                paintPoints("P"); //painting new
+            }
+            case "ARROWDOWN": {
+                List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
+
+                if (isOutOfBounds(updatedPoints))
+                    return;
+
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
+                this.currentPiece.setPoints(updatedPoints);
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
                 break;
+            }
             case "ARROWUP":
-                paintPoints("_"); //clearing old
-//                piece.rotateShape();
-                paintPoints("P"); //painting new
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
+                this.currentPiece.rotateShape();
+                this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
                 break;
         }
     }
 
-    private static void paintPoints(String character) {
-//        for (Point point : piece.getPoints()) {
-//            int row = point.y;
-//            int col = point.x;
-//
-//            if (row >= 0 && row < tileMap.length && col >= 0 && col < tileMap[0].length) {
-//                tileMap[row][col] = character;
-//            }
-//        }
+    public void moveComputer() {
+        List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
+
+        if (isOutOfBounds(updatedPoints))
+            return;
+
+        this.tileMap.updateTileMap(currentPiece.getPoints(), "| |"); //clearing old
+        this.currentPiece.setPoints(updatedPoints);
+        this.tileMap.updateTileMap(currentPiece.getPoints(), "P"); //painting new
     }
 
-    private static void movePoints(Direction direction) {
-//        int xOffset = (direction == Direction.RIGHT) ? 1 : (direction == Direction.LEFT) ? -1 : 0;
-//        int yOffset = (direction == Direction.DOWN) ? 1 : 0;
-//
-//        // Update the coordinates of the TetrisPiece points
-//        List<Point> updatedPoints = new ArrayList<>();
-//        for (Point point : piece.getPoints()) {
-//            updatedPoints.add(new Point(point.x + xOffset, point.y + yOffset));
-//        }
-//        piece.setPoints(updatedPoints);
+    public List<Point> movePoints(TetrisPiece tetrisPiece, GameState.Direction direction) {
+        int xOffset = (direction == GameState.Direction.RIGHT) ? 1 : (direction == GameState.Direction.LEFT) ? -1 : 0;
+        int yOffset = (direction == GameState.Direction.DOWN) ? 1 : 0;
+
+        // Update the coordinates of the TetrisPiece points
+        List<Point> updatedPoints = new ArrayList<>();
+        for (Point point : tetrisPiece.getPoints()) {
+            updatedPoints.add(new Point(point.x + xOffset, point.y + yOffset));
+        }
+
+        return updatedPoints;
     }
 
+    private boolean isOutOfBounds(List<Point> points) {
+        int maxX = this.tileMap.getWidth();
+        int maxY = this.tileMap.getHeight();
 
+        for (Point p : points) {
+            if (p.x < 0) // If at left border
+                return true;
+
+            if (p.x >= maxX) // If at right border
+                return true;
+
+            if (p.y >= maxY) // If at bottom
+                return true;
+        }
+        return false;
+    }
 }
+
