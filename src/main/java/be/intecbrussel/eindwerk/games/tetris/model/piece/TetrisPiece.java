@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.model.tetris.piece;
+package be.intecbrussel.eindwerk.games.tetris.model.piece;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @AllArgsConstructor

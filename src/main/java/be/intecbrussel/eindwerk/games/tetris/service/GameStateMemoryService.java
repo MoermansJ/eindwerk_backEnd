@@ -1,11 +1,10 @@
-package be.intecbrussel.eindwerk.service;
+package be.intecbrussel.eindwerk.games.tetris.service;
 
-import be.intecbrussel.eindwerk.model.tetris.GameState;
-import be.intecbrussel.eindwerk.repository.GameStateMemoryRepository;
+import be.intecbrussel.eindwerk.games.tetris.model.GameState;
+import be.intecbrussel.eindwerk.games.tetris.repository.GameStateMemoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,7 +16,11 @@ public class GameStateMemoryService {
         this.gameStateMemoryRepository.save(gameState);
     }
 
-    public Optional<GameState> getLatestGameState() {
+    public Optional<GameState> getLatestGameStateBySessionId(String sessionId) {
+        return gameStateMemoryRepository.findMostRecentGameStateBySessionId(sessionId);
+    }
+
+    public Optional<GameState> getMostRecentGameState() {
         return gameStateMemoryRepository.findMostRecentGameState();
     }
 }

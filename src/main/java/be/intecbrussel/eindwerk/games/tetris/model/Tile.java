@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.model.tetris;
+package be.intecbrussel.eindwerk.games.tetris.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

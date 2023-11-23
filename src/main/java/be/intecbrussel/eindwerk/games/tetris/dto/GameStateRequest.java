@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.dto;
+package be.intecbrussel.eindwerk.games.tetris.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

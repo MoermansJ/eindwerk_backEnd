@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.model.tetris.piece;
+package be.intecbrussel.eindwerk.games.tetris.model.piece;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

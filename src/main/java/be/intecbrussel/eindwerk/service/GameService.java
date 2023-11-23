@@ -1,64 +1,74 @@
 package be.intecbrussel.eindwerk.service;
 
-import be.intecbrussel.eindwerk.dto.GameStateRequest;
-import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
-import be.intecbrussel.eindwerk.model.tetris.GameState;
-import be.intecbrussel.eindwerk.model.tetris.Tile;
-import be.intecbrussel.eindwerk.model.tetris.TileMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import be.intecbrussel.eindwerk.games.tetris.dto.GameStateRequest;
+import be.intecbrussel.eindwerk.games.tetris.model.GameState;
+import be.intecbrussel.eindwerk.games.tetris.model.Tile;
+import be.intecbrussel.eindwerk.games.tetris.model.piece.TetrisPiece;
+import be.intecbrussel.eindwerk.games.tetris.service.GameStateMemoryService;
+import be.intecbrussel.eindwerk.games.tetris.service.GameStateService;
+import be.intecbrussel.eindwerk.games.tetris.service.TileMapService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope;
 
-import java.awt.Point;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Service
 public class GameService {
     //properties
-    private GameState gameState;
-
     private GameStateMemoryService gameStateMemoryService;
+    private GameStateService gameStateService;
+    private TileMapService tileMapService;
 
 
     //constructors
-    public GameService(GameStateMemoryService gameStateMemoryService) {
+    public GameService(GameStateService gameStateService, GameStateMemoryService gameStateMemoryService, TileMapService tileMapService) {
         this.gameStateMemoryService = gameStateMemoryService;
-
-        if (gameState == null) {
-            this.gameState = new GameState();
-        }
+        this.gameStateService = gameStateService;
+        this.tileMapService = tileMapService;
     }
 
 
     //custom methods
-    public GameState getGameState(GameStateRequest gameStateRequest) {
-        //game loop logic
+    public GameState getGameState(GameStateRequest gameStateRequest, HttpSession session) {
+        // Game loop logic
         Boolean computerMove = gameStateRequest.getComputerMove();
         String userInput = gameStateRequest.getKey();
 
-        Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameState(); //find another way to check if there's a record so i don't have to use silly optionals
+//        Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameStateBySessionId(session.getId()); //find another way to check if there's a record so i don't have to use silly optionals
+        Optional<GameState> oDbGameState = gameStateMemoryService.getMostRecentGameState();
 
-        if (oDbGameState.isPresent())
-            this.gameState = oDbGameState.get();
+        // Initialising game -> Make this into a seperate method
+        if (oDbGameState.isEmpty()) {
+            GameState gameState = new GameState();
+            gameState.setSessionId(session.getId());
 
-        //playermove
+            List<Tile> emptyTileMap = tileMapService.createEmptyTileMap(10, 20);
+            gameState.getTileMap().setTiles(emptyTileMap);
+
+            TetrisPiece tetrisPiece = gameStateService.getNextTetrisPiece();
+            gameState.setCurrentPiece(tetrisPiece);
+
+            tileMapService.paintTetrisPiece(gameState);
+
+            gameStateMemoryService.save(gameState);
+
+            return gameState;
+        }
+
+        GameState gameState = oDbGameState.get();
+
+        // Playermove
         if (!userInput.equals("NO_KEY"))
-            gameState.movePlayer(gameStateRequest.getKey());
+            gameStateService.movePlayer(gameState, gameStateRequest.getKey());
 
-        //computermove
+        // Computermove
         if (computerMove)
-            gameState.moveComputer();
+            gameStateService.moveComputer(gameState);
 
-        gameState.setTimeStamp(LocalDateTime.now());
         gameStateMemoryService.save(gameState);
 
-        return this.gameState;
+        return gameState;
     }
 }
