@@ -1,8 +1,6 @@
 package be.intecbrussel.eindwerk.model.tetris;
 
-import be.intecbrussel.eindwerk.model.tetris.piece.PieceL;
-import be.intecbrussel.eindwerk.model.tetris.piece.PieceZ;
-import be.intecbrussel.eindwerk.model.tetris.piece.TetrisPiece;
+import be.intecbrussel.eindwerk.model.tetris.piece.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +11,8 @@ import java.awt.Point;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @AllArgsConstructor
 @Data
@@ -53,7 +53,7 @@ public class GameState {
             case "ARROWLEFT": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.LEFT);
 
-                if (isOutOfBounds(updatedPoints))
+                if (isOutOfBounds(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -64,7 +64,7 @@ public class GameState {
             case "ARROWRIGHT": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.RIGHT);
 
-                if (isOutOfBounds(updatedPoints))
+                if (isOutOfBounds(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -75,7 +75,7 @@ public class GameState {
             case "ARROWDOWN": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
 
-                if (isOutOfBounds(updatedPoints))
+                if (isOutOfBounds(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -92,13 +92,18 @@ public class GameState {
     }
 
     public void moveComputer() { // Computermove is currently disabled from having any effect on the game; UNCOMMENT TO ENABLE!
-//        List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
+        List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
 
-//        if (isOutOfBounds(updatedPoints))
-//            return;
+        if (isOutOfBounds(currentPiece))
+            return;
+
+        if (isObstructed(currentPiece)) {
+            currentPiece = this.getNextTetrisPiece();
+            return;
+        }
 
         tileMap.clearTetrisPiece(currentPiece);
-        //this.currentPiece.setPoints(updatedPoints);
+        this.currentPiece.setPoints(updatedPoints);
         tileMap.paintTetrisPiece(currentPiece);
     }
 
@@ -115,7 +120,8 @@ public class GameState {
         return updatedPoints;
     }
 
-    private boolean isOutOfBounds(List<Point> points) {
+    private boolean isOutOfBounds(TetrisPiece tetrisPiece) {
+        List<Point> points = tetrisPiece.getPoints();
         int maxX = this.tileMap.getWidth();
         int maxY = this.tileMap.getHeight();
 
@@ -130,6 +136,53 @@ public class GameState {
                 return true;
         }
         return false;
+    }
+
+    private boolean isObstructed(TetrisPiece tetrisPiece) {
+        List<Point> points = tetrisPiece.getPoints();
+
+        for (Point p : points) {
+            int nextY = p.y + 1;
+            Optional<Tile> oTileBelow = this.tileMap.getTiles().stream().filter(t -> t.getY() == nextY && t.getX() == p.x).findFirst();
+
+            if (oTileBelow.isEmpty()) // If there is no tile below, AKA bottom boundary is reached
+                return true;
+
+            Tile tileBelow = oTileBelow.get();
+
+            if (tetrisPiece.getPoints().contains(new Point(tileBelow.getX(), tileBelow.getY()))) // If tile below is part of the same tetrisPiece
+                continue;
+
+            if (!tileBelow.getContent().equals("white")) // If tile below is already coloured, AKA there is a piece already placed
+                return true;
+        }
+
+        return false;
+    }
+
+    private TetrisPiece getNextTetrisPiece() {
+        //VRAGEN AAN MANUEL VOOR INPUT
+        //implement static factory methods for the Piece classes?
+        Random random = new Random();
+        int randomInt = random.nextInt(0, 7);
+
+        switch (randomInt) {
+            case 0:
+                return new PieceI();
+            case 1:
+                return new PieceJ();
+            case 2:
+                return new PieceL();
+            case 3:
+                return new PieceO();
+            case 4:
+                return new PieceS();
+            case 5:
+                return new PieceT();
+            case 6:
+                return new PieceZ();
+        }
+        return new PieceZ();
     }
 }
 

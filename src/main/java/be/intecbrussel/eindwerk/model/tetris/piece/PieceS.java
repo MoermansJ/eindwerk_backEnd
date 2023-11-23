@@ -11,6 +11,8 @@ public class PieceS extends TetrisPiece {
     @Id
     private Long id;
 
+    private String content = "green";
+
     public PieceS() {
         super(new String[][]{
                 {"_", "6", "6"},
