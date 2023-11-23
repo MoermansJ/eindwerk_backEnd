@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 @Entity
 public abstract class TetrisPiece {
+    //TO DO: zeker en vast een service van maken
     //properties
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +53,7 @@ public abstract class TetrisPiece {
     }
 
     private String[][] rotateShape(String[][] originalShape) {
+        // TO DO : verduidelijken + lambda's implementeren (eventueel)
 //        String[][] originalShape = convertShapeListTo2DArray(shape, this.width);
 
         this.rotationCounter++;

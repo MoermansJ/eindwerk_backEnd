@@ -43,7 +43,7 @@ public class GameState {
             this.currentPiece = new PieceZ();
 
         if (this.tileMap == null)
-            this.tileMap = new TileMap(16, 16, currentPiece);
+            this.tileMap = new TileMap(16, 7, currentPiece);
     }
 
 
@@ -53,7 +53,7 @@ public class GameState {
             case "ARROWLEFT": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.LEFT);
 
-                if (isOutOfBounds(currentPiece))
+                if (isObstructedLeft(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -64,7 +64,7 @@ public class GameState {
             case "ARROWRIGHT": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.RIGHT);
 
-                if (isOutOfBounds(currentPiece))
+                if (isObstructedRight(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -75,7 +75,7 @@ public class GameState {
             case "ARROWDOWN": {
                 List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
 
-                if (isOutOfBounds(currentPiece))
+                if (isObstructedBelow(currentPiece))
                     return;
 
                 tileMap.clearTetrisPiece(currentPiece);
@@ -94,10 +94,7 @@ public class GameState {
     public void moveComputer() { // Computermove is currently disabled from having any effect on the game; UNCOMMENT TO ENABLE!
         List<Point> updatedPoints = this.movePoints(this.currentPiece, Direction.DOWN);
 
-        if (isOutOfBounds(currentPiece))
-            return;
-
-        if (isObstructed(currentPiece)) {
+        if (isObstructedBelow(currentPiece)) {
             currentPiece = this.getNextTetrisPiece();
             return;
         }
@@ -120,51 +117,13 @@ public class GameState {
         return updatedPoints;
     }
 
-    private boolean isOutOfBounds(TetrisPiece tetrisPiece) {
-        List<Point> points = tetrisPiece.getPoints();
-        int maxX = this.tileMap.getWidth();
-        int maxY = this.tileMap.getHeight();
-
-        for (Point p : points) {
-            if (p.x < 0) // If at left border
-                return true;
-
-            if (p.x >= maxX) // If at right border
-                return true;
-
-            if (p.y >= maxY) // If at bottom
-                return true;
-        }
-        return false;
-    }
-
-    private boolean isObstructed(TetrisPiece tetrisPiece) {
-        List<Point> points = tetrisPiece.getPoints();
-
-        for (Point p : points) {
-            int nextY = p.y + 1;
-            Optional<Tile> oTileBelow = this.tileMap.getTiles().stream().filter(t -> t.getY() == nextY && t.getX() == p.x).findFirst();
-
-            if (oTileBelow.isEmpty()) // If there is no tile below, AKA bottom boundary is reached
-                return true;
-
-            Tile tileBelow = oTileBelow.get();
-
-            if (tetrisPiece.getPoints().contains(new Point(tileBelow.getX(), tileBelow.getY()))) // If tile below is part of the same tetrisPiece
-                continue;
-
-            if (!tileBelow.getContent().equals("white")) // If tile below is already coloured, AKA there is a piece already placed
-                return true;
-        }
-
-        return false;
-    }
-
     private TetrisPiece getNextTetrisPiece() {
+        // TO DO : opsplitsen naar eigen PieceUtil klasse
         //VRAGEN AAN MANUEL VOOR INPUT
-        //implement static factory methods for the Piece classes?
+        //implement static factory methods for the Piece classes? Manuel: no -> keep switch
         Random random = new Random();
         int randomInt = random.nextInt(0, 7);
+        // Input van Bogdan: bereik van nummers verbreden (van 0 - 10)
 
         switch (randomInt) {
             case 0:
@@ -184,5 +143,66 @@ public class GameState {
         }
         return new PieceZ();
     }
+
+    private boolean isObstructedLeft(TetrisPiece tetrisPiece) {
+        for (Point p : tetrisPiece.getPoints()) {
+            int leftX = p.x - 1;
+            Optional<Tile> oTileLeft = this.tileMap.getTiles().stream().filter(t -> t.getY() == p.getY() && t.getX() == leftX).findFirst();
+
+            if (oTileLeft.isEmpty())
+                return true;
+
+            Tile tileLeft = oTileLeft.get();
+
+            if (tetrisPiece.getPoints().contains(new Point(tileLeft.getX(), tileLeft.getY()))) // If tile left is part of the same tetrisPiece
+                continue;
+
+            if (!tileLeft.getContent().equals("white"))
+                return true;
+
+        }
+        return false;
+    }
+
+    private boolean isObstructedRight(TetrisPiece tetrisPiece) {
+        for (Point p : tetrisPiece.getPoints()) {
+            int rightX = p.x + 1;
+            Optional<Tile> oTileRight = this.tileMap.getTiles().stream().filter(t -> t.getY() == p.getY() && t.getX() == rightX).findFirst();
+
+            if (oTileRight.isEmpty())
+                return true;
+
+            Tile tileRight = oTileRight.get();
+
+            if (tetrisPiece.getPoints().contains(new Point(tileRight.getX(), tileRight.getY()))) // If tile right is part of the same tetrisPiece
+                continue;
+
+            if (!tileRight.getContent().equals("white"))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isObstructedBelow(TetrisPiece tetrisPiece) {
+        for (Point p : tetrisPiece.getPoints()) {
+            int nextY = p.y + 1;
+            Optional<Tile> oTileBelow = this.tileMap.getTiles().stream().filter(t -> t.getY() == nextY && t.getX() == p.x).findFirst();
+
+            if (oTileBelow.isEmpty()) // If there is no tile below, AKA bottom boundary is reached
+                return true;
+
+            Tile tileBelow = oTileBelow.get();
+
+            if (tetrisPiece.getPoints().contains(new Point(tileBelow.getX(), tileBelow.getY()))) // If tile below is part of the same tetrisPiece
+                continue;
+
+            if (!tileBelow.getContent().equals("white")) // If tile below is already coloured, AKA there is a piece already placed
+                return true;
+        }
+
+        return false;
+    }
+
+
 }
 
