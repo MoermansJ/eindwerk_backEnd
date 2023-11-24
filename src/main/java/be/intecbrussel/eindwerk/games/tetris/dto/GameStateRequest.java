@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class GameStateRequest {
     private Boolean computerMove;
     private String key;
+    private String sessionId;
 }

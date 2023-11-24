@@ -3,9 +3,14 @@ package be.intecbrussel.eindwerk.controller;
 import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.service.AuthService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -43,6 +48,20 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Token validation failed. " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/getSessionId")
+    public ResponseEntity getSessionId(HttpSession session) {
+        try {
+            String sessionId = UUID.randomUUID().toString();
+            session.setAttribute("SESSION_ID", sessionId);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("sessionId", sessionId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

@@ -16,9 +16,9 @@ class GameController {
     private GameService gameService;
 
     @PostMapping("/getGameState")
-    public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest, HttpSession session) {
+    public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest) {
         try {
-            return ResponseEntity.ok(gameService.getGameState(gameStateRequest, session));
+            return ResponseEntity.ok(gameService.getGameState(gameStateRequest));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

@@ -6,6 +6,7 @@ import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
 import be.intecbrussel.eindwerk.security.JWTUtil;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -66,5 +68,9 @@ public class AuthService {
 
     public boolean validateToken(String token) {
         return jwtUtil.validateClaims(token);
+    }
+
+    public String generateSessionId() {
+        return UUID.randomUUID().toString();
     }
 }

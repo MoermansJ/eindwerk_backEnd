@@ -31,30 +31,15 @@ public class GameService {
 
 
     //custom methods
-    public GameState getGameState(GameStateRequest gameStateRequest, HttpSession session) {
+    public GameState getGameState(GameStateRequest gameStateRequest) {
         // Game loop logic
         Boolean computerMove = gameStateRequest.getComputerMove();
         String userInput = gameStateRequest.getKey();
 
-//        Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameStateBySessionId(session.getId()); //find another way to check if there's a record so i don't have to use silly optionals
-        Optional<GameState> oDbGameState = gameStateMemoryService.getMostRecentGameState();
+        Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameStateBySessionId(gameStateRequest.getSessionId());
 
-        // Initialising game -> Make this into a seperate method
         if (oDbGameState.isEmpty()) {
-            GameState gameState = new GameState();
-            gameState.setSessionId(session.getId());
-
-            List<Tile> emptyTileMap = tileMapService.createEmptyTileMap(10, 20);
-            gameState.getTileMap().setTiles(emptyTileMap);
-
-            TetrisPiece tetrisPiece = gameStateService.getNextTetrisPiece();
-            gameState.setCurrentPiece(tetrisPiece);
-
-            tileMapService.paintTetrisPiece(gameState);
-
-            gameStateMemoryService.save(gameState);
-
-            return gameState;
+            return this.getNewGameState(gameStateRequest.getSessionId());
         }
 
         GameState gameState = oDbGameState.get();
@@ -66,6 +51,23 @@ public class GameService {
         // Computermove
         if (computerMove)
             gameStateService.moveComputer(gameState);
+
+        gameStateMemoryService.save(gameState);
+
+        return gameState;
+    }
+
+    private GameState getNewGameState(String sessionId) {
+        GameState gameState = new GameState();
+        gameState.setSessionId(sessionId);
+
+        List<Tile> emptyTileMap = tileMapService.createEmptyTileMap(10, 20);
+        gameState.getTileMap().setTiles(emptyTileMap);
+
+        TetrisPiece tetrisPiece = gameStateService.getNextTetrisPiece();
+        gameState.setCurrentPiece(tetrisPiece);
+
+        tileMapService.paintTetrisPiece(gameState);
 
         gameStateMemoryService.save(gameState);
 
