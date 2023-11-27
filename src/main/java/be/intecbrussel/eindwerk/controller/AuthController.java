@@ -52,12 +52,10 @@ public class AuthController {
     }
 
     @GetMapping("/getSessionId")
-    public ResponseEntity getSessionId(HttpSession session) {
+    public ResponseEntity getSessionId() {
         try {
             String sessionId = UUID.randomUUID().toString();
-            session.setAttribute("SESSION_ID", sessionId);
-
-            Map<String, String> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>(); // Making it JSON compatible
             response.put("sessionId", sessionId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

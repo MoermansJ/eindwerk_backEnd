@@ -16,17 +16,17 @@ public class TileMapService {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < (height); y++) {
-                emptyTileMap.add(new Tile(x, y, "white"));
+                emptyTileMap.add(new Tile(x, y, "blank"));
             }
         }
 
         return emptyTileMap;
     }
 
-    public void clearTetrisPiece(GameState gameState) {
+    public void unpaintTetrisPiece(GameState gameState) {
         TetrisPiece tetrisPiece = gameState.getCurrentPiece();
         List<Tile> matchingTiles = this.getMatchingTiles(gameState);
-        matchingTiles.forEach(mt -> mt.setContent("white"));
+        matchingTiles.forEach(mt -> mt.setContent("blank"));
     }
 
     public void paintTetrisPiece(GameState gameState) {

@@ -34,17 +34,13 @@ public class GameState {
     @OneToOne(cascade = CascadeType.ALL)
     private TetrisPiece currentPiece;
 
-    private LocalDateTime timeStamp;
-
-    public enum Direction {
-        LEFT, RIGHT, DOWN
-    }
+    private Long timeStamp;
 
 
     //constructors
     public GameState() {
         this.tileMap = new TileMap();
-        this.timeStamp = LocalDateTime.now();
+        this.timeStamp = System.currentTimeMillis();
     }
 }
 

@@ -10,9 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface GameStateMemoryRepository extends JpaRepository<GameState, Long> {
-    @Query("SELECT g FROM GameState g WHERE g.sessionId = :sessionId ORDER BY g.timeStamp DESC")
-    Optional<GameState> findMostRecentGameStateBySessionId(@Param("sessionId") String sessionId);
-
-    @Query("SELECT g FROM GameState g ORDER BY g.timeStamp DESC")
-    Optional<GameState> findMostRecentGameState();
+    //    @Query("SELECT g FROM GameState g WHERE g.sessionId = :sessionId ORDER BY g.timeStamp DESC")
+//    Optional<GameState> findMostRecentGameStateBySessionId(@Param("sessionId") String sessionId);
+    Optional<GameState> findFirstBySessionIdOrderByTimeStampDesc(String sessionId);
 }
