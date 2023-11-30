@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,34 +21,19 @@ public abstract class TetrisPiece {
     @ElementCollection
     protected List<Point> points;
 
-    @ElementCollection
-    protected List<String> shape;
-
     protected int rotationCounter;
 
     protected String content;
 
 
     // Constructors
-    public TetrisPiece(List<String> shape) {
-        this.shape = shape;
-        this.points = this.getPointsFromShape(shape);
+    public TetrisPiece(List<Point> tiles) {
+        this.points = tiles;
+//        this.points = this.getPointsFromShape(shape);
     }
 
 
     // Custom methods
-    public List<Point> getPointsFromShape(List<String> shape) {
-        List<Point> filledCells = new ArrayList<>();
 
-        // Not using lambda's here because I need the index position
-        for (int row = 0; row < shape.size(); row++) {
-            for (int col = 0; col < shape.get(row).length(); col++) {
-                char currentChar = shape.get(row).charAt(col);
-                if (currentChar != '_')
-                    filledCells.add(new Point(col, row));
-            }
-        }
 
-        return filledCells;
-    }
 }

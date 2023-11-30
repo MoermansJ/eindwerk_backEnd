@@ -12,8 +12,9 @@ public class GameStateMemoryService {
     @Autowired
     private GameStateMemoryRepository gameStateMemoryRepository;
 
-    public void save(GameState gameState) {
+    public GameState save(GameState gameState) {
         this.gameStateMemoryRepository.save(gameState);
+        return gameState;
     }
 
     public Optional<GameState> getLatestGameStateBySessionId(String sessionId) {

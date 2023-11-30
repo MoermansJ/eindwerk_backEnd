@@ -26,14 +26,22 @@ public class TileMap {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Tile> tiles;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private TetrisPiece currentPiece;
+    private int linesCleared;
+
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private TetrisPiece currentPiece;
 
 
     //constructors
-    public TileMap(int width, int height, TetrisPiece tetrisPiece) {
+//    public TileMap(int width, int height, List<Tile> tiles, TetrisPiece tetrisPiece) {
+//        this.width = width;
+//        this.height = height;
+//        this.tiles = tiles;
+//        this.currentPiece = tetrisPiece;
+//    }
+    public TileMap(int width, int height, List<Tile> tiles) {
         this.width = width;
         this.height = height;
-        this.currentPiece = tetrisPiece;
+        this.tiles = tiles;
     }
 }

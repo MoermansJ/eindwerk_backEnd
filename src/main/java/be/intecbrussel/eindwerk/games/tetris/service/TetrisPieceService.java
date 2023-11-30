@@ -11,45 +11,50 @@ import java.util.Random;
 @Service
 public class TetrisPieceService {
     // Custom methods
-    public TetrisPiece rotateTetrisPiece(TetrisPiece tetrisPiece) {
-        // Rotating shape
-        List<String> rotatedShape = this.rotateShape(tetrisPiece);
-        tetrisPiece.setShape(rotatedShape);
+    public List<Point> rotate(TetrisPiece tetrisPiece) {
+        int rotations = tetrisPiece.getRotationCounter();
+        tetrisPiece.setRotationCounter(++rotations);
+        List<Point> rotatedPoints = new ArrayList<>(tetrisPiece.getPoints());
 
-        // Getting collision points from new shape
-        List<Point> rotatedPoints = tetrisPiece.getPointsFromShape(rotatedShape);
-        tetrisPiece.setPoints(rotatedPoints);
+        Point center = this.calculateCenter(rotatedPoints);
 
-        return tetrisPiece;
-    }
+        // Find the minimum Y value before rotating
+        int minYBefore = (int) rotatedPoints.stream().mapToDouble(Point::getY).min().orElse(0);
 
-    private List<String> rotateShape(TetrisPiece tetrisPiece) {
-        int rotationCounter = tetrisPiece.getRotationCounter() + 1;
-        tetrisPiece.setRotationCounter(rotationCounter);
-        List<String> originalShape = tetrisPiece.getShape();
-        int rows = originalShape.size();
-        int cols = originalShape.get(0).length();
+        // Rotating 90° clockwise
+        for (Point point : rotatedPoints) {
+            int tempX = point.x - center.x;
+            int tempY = point.y - center.y;
 
-        List<String> rotatedShape = new ArrayList<>();
-
-        for (int r = 0; r < rotationCounter; r++) { // Amount of rotations
-            for (int j = 0; j < cols; j++) {        // Perform the rotation
-                StringBuilder newRow = new StringBuilder();
-                for (int i = rows - 1; i >= 0; i--) {
-                    newRow.append(originalShape.get(i).charAt(j));
-                }
-                rotatedShape.add(newRow.toString());
-            }
+            point.x = center.x + tempY;
+            point.y = center.y - tempX;
         }
 
-        return rotatedShape;
+        // Find the minimum Y value after rotating
+        int minYAfter = (int) rotatedPoints.stream().mapToDouble(Point::getY).min().orElse(0);
+
+        // Adjust all Y coordinates to ensure the minimum Y remains the same
+        int yAdjustment = minYBefore - minYAfter;
+        rotatedPoints.forEach(point -> point.y += yAdjustment);
+
+        return rotatedPoints;
+    }
+
+    private Point calculateCenter(List<Point> points) {
+        int totalX = 0;
+        int totalY = 0;
+
+        for (Point point : points) {
+            totalX += point.x;
+            totalY += point.y;
+        }
+
+        return new Point(totalX / points.size(), totalY / points.size());
     }
 
     public TetrisPiece getNextTetrisPiece() {
-        // TO DO : opsplitsen naar eigen PieceUtil klasse
         Random random = new Random();
         int randomInt = random.nextInt(0, 7);
-        // Input van Bogdan: bereik van nummers verbreden (van 0 - 10)
 
         switch (randomInt) {
             case 0:

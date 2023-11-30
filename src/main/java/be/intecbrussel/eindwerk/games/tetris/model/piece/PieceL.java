@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +27,12 @@ public class PieceL extends TetrisPiece {
 
 
     // Custom methods
-    private static List<String> generateShape() {
+    private static List<Point> generateShape() {
         return new ArrayList<>(Arrays.asList(
-                "P_",
-                "P_",
-                "PP"
+                new Point(2, 0),
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(2, 1)
         ));
     }
 }

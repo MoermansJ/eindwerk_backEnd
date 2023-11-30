@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
+
+import java.awt.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,13 +21,11 @@ public class Tile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int x;
-    private int y;
+    private Point point;
     private String content;
 
     public Tile(int x, int y, String content) {
-        this.x = x;
-        this.y = y;
+        this.point = new Point(x, y);
         this.content = content;
     }
 }

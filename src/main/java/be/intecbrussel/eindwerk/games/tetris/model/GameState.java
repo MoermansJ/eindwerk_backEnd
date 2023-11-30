@@ -1,22 +1,13 @@
 package be.intecbrussel.eindwerk.games.tetris.model;
 
 import be.intecbrussel.eindwerk.games.tetris.model.piece.*;
-import be.intecbrussel.eindwerk.games.tetris.service.GameStateService;
-import be.intecbrussel.eindwerk.service.GameService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.awt.Point;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "tb_gamestate")
@@ -36,11 +27,6 @@ public class GameState {
 
     private Long timeStamp;
 
-
-    //constructors
-    public GameState() {
-        this.tileMap = new TileMap();
-        this.timeStamp = System.currentTimeMillis();
-    }
+    private int userScore;
 }
 
