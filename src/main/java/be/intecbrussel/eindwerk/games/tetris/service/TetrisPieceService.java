@@ -1,5 +1,6 @@
 package be.intecbrussel.eindwerk.games.tetris.service;
 
+import be.intecbrussel.eindwerk.games.tetris.model.TileMap;
 import be.intecbrussel.eindwerk.games.tetris.model.piece.*;
 import org.springframework.stereotype.Service;
 
@@ -10,35 +11,41 @@ import java.util.Random;
 
 @Service
 public class TetrisPieceService {
-    // Custom methods
-    public List<Point> rotate(TetrisPiece tetrisPiece) {
-        int rotations = tetrisPiece.getRotationCounter();
-        tetrisPiece.setRotationCounter(++rotations);
-        List<Point> rotatedPoints = new ArrayList<>(tetrisPiece.getPoints());
+    public List<Point> rotate(TetrisPiece tetrisPiece, TileMap tileMap) {
+        int currentRotations = tetrisPiece.getRotationCounter();
+        tetrisPiece.setRotationCounter(++currentRotations);
+        List<Point> currentPoints = new ArrayList<>(tetrisPiece.getPoints());
+        Point rotationCenter = calculateCenter(currentPoints);
 
-        Point center = this.calculateCenter(rotatedPoints);
+        int minYBeforeRotation = currentPoints.stream().mapToInt(point -> (int) point.getY()).min().orElse(0);
 
-        // Find the minimum Y value before rotating
-        int minYBefore = (int) rotatedPoints.stream().mapToDouble(Point::getY).min().orElse(0);
+        currentPoints.forEach(point -> {
+            int relativeX = point.x - rotationCenter.x;
+            int relativeY = point.y - rotationCenter.y;
+            point.setLocation(rotationCenter.x + relativeY, rotationCenter.y - relativeX);
+        });
 
-        // Rotating 90° clockwise
-        for (Point point : rotatedPoints) {
-            int tempX = point.x - center.x;
-            int tempY = point.y - center.y;
+        int minYAfterRotation = currentPoints.stream().mapToInt(point -> (int) point.getY()).min().orElse(0);
+        int yAdjustment = minYBeforeRotation - minYAfterRotation;
+        currentPoints.forEach(point -> point.translate(0, yAdjustment));
 
-            point.x = center.x + tempY;
-            point.y = center.y - tempX;
+        int minX = currentPoints.stream().mapToInt(point -> (int) point.getX()).min().orElse(0);
+        int maxX = currentPoints.stream().mapToInt(point -> (int) point.getX()).max().orElse(0);
+        int xAdjustment;
+
+        if (minX < 0) {
+            xAdjustment = -minX;
+        } else if (maxX >= tileMap.getWidth()) {
+            xAdjustment = tileMap.getWidth() - 1 - maxX;
+        } else {
+            xAdjustment = 0;
         }
 
-        // Find the minimum Y value after rotating
-        int minYAfter = (int) rotatedPoints.stream().mapToDouble(Point::getY).min().orElse(0);
+        currentPoints.forEach(point -> point.translate(xAdjustment, 0));
 
-        // Adjust all Y coordinates to ensure the minimum Y remains the same
-        int yAdjustment = minYBefore - minYAfter;
-        rotatedPoints.forEach(point -> point.y += yAdjustment);
-
-        return rotatedPoints;
+        return currentPoints;
     }
+
 
     private Point calculateCenter(List<Point> points) {
         int totalX = 0;

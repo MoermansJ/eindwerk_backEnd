@@ -1,12 +1,13 @@
 package be.intecbrussel.eindwerk.service;
 
+import be.intecbrussel.eindwerk.config.MysqlDataSourceConfig;
 import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.UserRepository;
 import be.intecbrussel.eindwerk.security.JWTUtil;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -22,6 +22,10 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+
+    @Autowired
+    private MysqlDataSourceConfig dynamicDataSourceConfig;
+
 
     public AuthService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.userRepository = userRepository;
@@ -61,16 +65,11 @@ public class AuthService {
         String username = authentication.getName();
         User user = new User(username, "");
         String token = jwtUtil.createToken(user, "NO ROLES IN THIS APPLICATION YET");
-        AuthTokenDTO authTokenDTO = new AuthTokenDTO(username, token);
 
-        return authTokenDTO;
+        return new AuthTokenDTO(username, token);
     }
 
     public boolean validateToken(String token) {
         return jwtUtil.validateClaims(token);
-    }
-
-    public String generateSessionId() {
-        return UUID.randomUUID().toString();
     }
 }

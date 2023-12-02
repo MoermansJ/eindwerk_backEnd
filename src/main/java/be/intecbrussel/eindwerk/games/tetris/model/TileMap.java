@@ -23,7 +23,7 @@ public class TileMap {
     private int width;
     private int height;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tile> tiles;
 
     private int linesCleared;

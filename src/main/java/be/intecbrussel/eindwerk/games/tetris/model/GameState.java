@@ -12,17 +12,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_gamestate")
 public class GameState {
-    //properties
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String sessionId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private TileMap tileMap;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private TetrisPiece currentPiece;
 
     private Long timeStamp;

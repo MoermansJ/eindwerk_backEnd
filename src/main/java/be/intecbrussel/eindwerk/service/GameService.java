@@ -1,5 +1,6 @@
 package be.intecbrussel.eindwerk.service;
 
+import be.intecbrussel.eindwerk.config.MysqlDataSourceConfig;
 import be.intecbrussel.eindwerk.games.tetris.dto.GameStateRequest;
 import be.intecbrussel.eindwerk.games.tetris.model.GameState;
 import be.intecbrussel.eindwerk.games.tetris.model.Tile;
@@ -9,13 +10,11 @@ import be.intecbrussel.eindwerk.games.tetris.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class GameService {
-    // Properties
     @Autowired
     private GameStateMemoryService gameStateMemoryService;
     @Autowired
@@ -24,11 +23,11 @@ public class GameService {
     private MovementService movementService;
     @Autowired
     private TetrisPieceService tetrisPieceService;
+    @Autowired
+    private MysqlDataSourceConfig dynamicDataSourceConfig;
 
 
-    // Custom methods
     public GameState getGameState(GameStateRequest gameStateRequest) {
-        // Game loop logic
         Boolean computerMove = gameStateRequest.getComputerMove();
         String userInput = gameStateRequest.getKey();
         String sessionId = gameStateRequest.getSessionId();
@@ -40,22 +39,21 @@ public class GameService {
         }
 
         GameState gameState = oDbGameState.get();
-
         tileMapService.unpaintTetrisPiece(gameState);
 
-        // Player input
-        if (!userInput.equals("NO_KEY")) {
-            movementService.movePlayer(gameState, gameStateRequest.getKey());
-        }
-
-        tileMapService.paintTetrisPiece(gameState);
-
-        // Computer
         if (computerMove) {
             movementService.doComputerMove(gameState);
         }
 
+        if (!userInput.equals("NO_KEY")) {
+            movementService.doUserMove(gameState, gameStateRequest.getKey());
+        }
+
+        tileMapService.paintTetrisPiece(gameState);
+
+
         gameState.setTimeStamp(System.currentTimeMillis());
+
         gameStateMemoryService.save(gameState);
 
         return gameState;
@@ -63,22 +61,19 @@ public class GameService {
 
     private GameState getDefaultGamestate(String sessionId) {
         GameState gameState = new GameState();
-        gameState.setSessionId(sessionId);
-
-        // SET BACK TO WIDTH 10 HEIGHT 20 AFTER TESTING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        int width = 6, height = 10;
-        List<Tile> emptyTiles = tileMapService.createEmptyTileMap(width, height);
-        TileMap defaultTileMap = new TileMap(width, height, emptyTiles);
-        gameState.setTileMap(defaultTileMap);
+        int width = 10, height = 20;
 
         TetrisPiece tetrisPiece = tetrisPieceService.getNextTetrisPiece();
+        List<Tile> emptyTiles = tileMapService.createEmptyTileMap(width, height);
+        TileMap defaultTileMap = new TileMap(width, height, emptyTiles);
+
+        gameState.setTileMap(defaultTileMap);
         gameState.setCurrentPiece(tetrisPiece);
+        gameState.setSessionId(sessionId);
+        gameState.setTimeStamp(System.currentTimeMillis());
 
         tileMapService.positionNewTetrisPiece(gameState);
-        tileMapService.paintTetrisPiece(gameState);
 
-        gameState.setTimeStamp(System.currentTimeMillis());
         return gameStateMemoryService.save(gameState);
     }
-
 }

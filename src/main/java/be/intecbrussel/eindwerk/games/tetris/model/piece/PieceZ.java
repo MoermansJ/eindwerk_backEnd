@@ -3,7 +3,6 @@ package be.intecbrussel.eindwerk.games.tetris.model.piece;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
-import org.springframework.security.core.parameters.P;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,12 +21,12 @@ public class PieceZ extends TetrisPiece {
 
     // Constructors
     public PieceZ() {
-        super(generateShape());
+        super(getShapeAsPointList());
     }
 
 
     // Custom methods
-    private static List<Point> generateShape() {
+    private static List<Point> getShapeAsPointList() {
         return new ArrayList<>(Arrays.asList(
                 new Point(0, 0),
                 new Point(1, 0),

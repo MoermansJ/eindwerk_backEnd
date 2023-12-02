@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 import java.awt.*;
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class TetrisPiece {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     protected List<Point> points;
 
     protected int rotationCounter;
@@ -29,11 +30,5 @@ public abstract class TetrisPiece {
     // Constructors
     public TetrisPiece(List<Point> tiles) {
         this.points = tiles;
-//        this.points = this.getPointsFromShape(shape);
     }
-
-
-    // Custom methods
-
-
 }

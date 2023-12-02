@@ -21,12 +21,12 @@ public class PieceO extends TetrisPiece {
 
     // Constructors
     public PieceO() {
-        super(generateShape());
+        super(getShapeAsPointList());
     }
 
 
     // Custom methods
-    private static List<Point> generateShape() {
+    private static List<Point> getShapeAsPointList() {
         return new ArrayList<>(Arrays.asList(
                 new Point(0, 0),
                 new Point(1, 0),

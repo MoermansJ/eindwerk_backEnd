@@ -21,7 +21,7 @@ public class MovementService {
 
 
     // Custom methods
-    public GameState movePlayer(GameState gameState, String key) {
+    public GameState doUserMove(GameState gameState, String key) {
         TetrisPiece currentPiece = gameState.getCurrentPiece();
 
         switch (key) {
@@ -29,13 +29,10 @@ public class MovementService {
                 List<Point> updatedPoints = this.movePoints(currentPiece, Direction.LEFT);
 
                 if (isObstructedLeft(gameState)) {
-                    tileMapService.paintTetrisPiece(gameState);
                     return gameState;
                 }
 
-                tileMapService.unpaintTetrisPiece(gameState);
                 gameState.getCurrentPiece().setPoints(updatedPoints);
-                tileMapService.paintTetrisPiece(gameState);
 
                 break;
             }
@@ -43,29 +40,24 @@ public class MovementService {
                 List<Point> updatedPoints = this.movePoints(currentPiece, Direction.RIGHT);
 
                 if (isObstructedRight(gameState)) {
-                    tileMapService.paintTetrisPiece(gameState);
                     return gameState;
                 }
 
                 gameState.getCurrentPiece().setPoints(updatedPoints);
-                tileMapService.paintTetrisPiece(gameState);
                 break;
             }
             case "ARROWDOWN": {
                 List<Point> updatedPoints = this.movePoints(currentPiece, Direction.DOWN);
 
                 if (isObstructedBelow(gameState)) {
-                    tileMapService.paintTetrisPiece(gameState);
                     return gameState;
                 }
 
-                tileMapService.unpaintTetrisPiece(gameState);
                 gameState.getCurrentPiece().setPoints(updatedPoints);
-                tileMapService.paintTetrisPiece(gameState);
                 break;
             }
             case "ARROWUP":
-                tetrisPieceService.rotate(currentPiece);
+                tetrisPieceService.rotate(currentPiece, gameState.getTileMap());
                 break;
         }
 
@@ -147,15 +139,14 @@ public class MovementService {
         List<Point> updatedPoints = this.movePoints(currentPiece, Direction.DOWN);
 
         if (isObstructedBelow(gameState)) {
+            tileMapService.paintTetrisPiece(gameState);
             tileMapService.removeCompleteLinesFromTileMap(gameState.getTileMap());
             gameState.setCurrentPiece(tetrisPieceService.getNextTetrisPiece());
             tileMapService.positionNewTetrisPiece(gameState);
             return gameState;
         }
 
-        tileMapService.unpaintTetrisPiece(gameState);
         currentPiece.setPoints(updatedPoints);
-        tileMapService.paintTetrisPiece(gameState);
 
         return gameState;
     }
