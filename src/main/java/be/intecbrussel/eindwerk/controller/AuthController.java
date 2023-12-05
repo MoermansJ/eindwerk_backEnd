@@ -17,7 +17,7 @@ import java.util.UUID;
 public class AuthController {
     private AuthService authService;
 
-    
+
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
@@ -53,13 +53,10 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/getSessionId")
+    @GetMapping("/generateSessionId")
     public ResponseEntity getSessionId() {
         try {
-            String sessionId = UUID.randomUUID().toString();
-            Map<String, String> response = new HashMap<>(); // Making it JSON compatible
-            response.put("sessionId", sessionId);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(authService.generateSessionId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
