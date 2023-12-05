@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/game")
 class GameController {
-    @Autowired
     private GameService gameService;
+
+    
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
+    }
+
 
     @PostMapping("/getGameState")
     public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest) {
