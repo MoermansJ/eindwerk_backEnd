@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -32,13 +31,6 @@ public class H2DataSourceConfig {
     @Primary
     @Bean(name = "gamestateDataSource")
     public DataSource dataSource() {
-//        DriverManagerDataSource ds = new DriverManagerDataSource();
-//        ds.setUrl("jdbc:h2:mem:GameStateMemory");
-//        ds.setUsername("sa");
-//        ds.setPassword("sa");
-//        ds.setDriverClassName("org.h2.Driver");
-//        return ds;
-
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .setName("GameStateMemory")
