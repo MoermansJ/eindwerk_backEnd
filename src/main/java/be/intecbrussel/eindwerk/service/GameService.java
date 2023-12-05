@@ -1,13 +1,11 @@
 package be.intecbrussel.eindwerk.service;
 
-import be.intecbrussel.eindwerk.config.MysqlDataSourceConfig;
 import be.intecbrussel.eindwerk.games.tetris.dto.GameStateRequest;
 import be.intecbrussel.eindwerk.games.tetris.model.GameState;
 import be.intecbrussel.eindwerk.games.tetris.model.Tile;
 import be.intecbrussel.eindwerk.games.tetris.model.TileMap;
 import be.intecbrussel.eindwerk.games.tetris.model.piece.TetrisPiece;
 import be.intecbrussel.eindwerk.games.tetris.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

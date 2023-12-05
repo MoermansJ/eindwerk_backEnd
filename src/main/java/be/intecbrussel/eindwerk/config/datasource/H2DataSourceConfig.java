@@ -1,13 +1,15 @@
-package be.intecbrussel.eindwerk.config;
+package be.intecbrussel.eindwerk.config.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,43 +23,41 @@ import java.util.HashMap;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "userEntityManagerFactory",
-        basePackages = "be.intecbrussel.eindwerk.repository.mysql",
-        transactionManagerRef = "userTransactionManager"
+        entityManagerFactoryRef = "gamestateEntityManagerFactory",
+        basePackages = {"be.intecbrussel.eindwerk.games.tetris.repository", "be.intecbrussel.eindwerk.repository.h2"},
+        transactionManagerRef = "gamestateTransactionManager"
 )
+@EntityScan(basePackages = {"be.intecbrussel.eindwerk.games.tetris.model"})
 @Data
-public class MysqlDataSourceConfig {
+public class H2DataSourceConfig {
     @Primary
-    @Bean(name = "userDataSource")
+    @Bean(name = "gamestateDataSource")
     public DataSource dataSource() {
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setUrl("jdbc:mysql://localhost:3306/db_eindwerk");
-        ds.setUsername("root");
-        ds.setPassword("admin");
-        ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        return ds;
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .setName("GameStateMemory")
+                .build();
     }
 
     @Primary
-    @Bean(name = "userEntityManagerFactory")
+    @Bean(name = "gamestateEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManager() {
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
-        bean.setDataSource(dataSource());
-
+        bean.setDataSource(this.dataSource());
+        bean.setPackagesToScan("be.intecbrussel.eindwerk.games.tetris.model");
         JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(adapter);
 
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         bean.setJpaPropertyMap(properties);
-        bean.setPackagesToScan("be.intecbrussel.eindwerk.model");
         return bean;
     }
 
     @Primary
-    @Bean(name = "userTransactionManager")
-    public PlatformTransactionManager transactionManager(@Qualifier("userEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "gamestateTransactionManager")
+    public PlatformTransactionManager transactionManager(@Qualifier("gamestateEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 

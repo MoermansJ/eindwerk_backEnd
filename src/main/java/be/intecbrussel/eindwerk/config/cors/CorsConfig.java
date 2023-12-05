@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.config;
+package be.intecbrussel.eindwerk.config.cors;
 
 import org.springframework.context.annotation.*;
 import org.springframework.web.cors.CorsConfiguration;
