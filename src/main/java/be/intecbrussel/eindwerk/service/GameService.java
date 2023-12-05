@@ -15,48 +15,32 @@ import java.util.Optional;
 
 @Service
 public class GameService {
-    @Autowired
     private GameStateMemoryService gameStateMemoryService;
-    @Autowired
     private TileMapService tileMapService;
-    @Autowired
     private MovementService movementService;
-    @Autowired
     private TetrisPieceService tetrisPieceService;
-    @Autowired
-    private MysqlDataSourceConfig dynamicDataSourceConfig;
+
+
+    public GameService(GameStateMemoryService gameStateMemoryService,
+                       TileMapService tileMapService,
+                       MovementService movementService,
+                       TetrisPieceService tetrisPieceService) {
+        this.gameStateMemoryService = gameStateMemoryService;
+        this.tileMapService = tileMapService;
+        this.movementService = movementService;
+        this.tetrisPieceService = tetrisPieceService;
+    }
 
 
     public GameState getGameState(GameStateRequest gameStateRequest) {
-        Boolean computerMove = gameStateRequest.getComputerMove();
-        String userInput = gameStateRequest.getKey();
         String sessionId = gameStateRequest.getSessionId();
-
         Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameStateBySessionId(sessionId);
 
         if (oDbGameState.isEmpty()) {
             return this.getDefaultGamestate(gameStateRequest.getSessionId());
         }
 
-        GameState gameState = oDbGameState.get();
-        tileMapService.unpaintTetrisPiece(gameState);
-
-        if (computerMove) {
-            movementService.doComputerMove(gameState);
-        }
-
-        if (!userInput.equals("NO_KEY")) {
-            movementService.doUserMove(gameState, gameStateRequest.getKey());
-        }
-
-        tileMapService.paintTetrisPiece(gameState);
-
-
-        gameState.setTimeStamp(System.currentTimeMillis());
-
-        gameStateMemoryService.save(gameState);
-
-        return gameState;
+        return this.updateGameState(gameStateRequest, oDbGameState.get());
     }
 
     private GameState getDefaultGamestate(String sessionId) {
@@ -73,6 +57,26 @@ public class GameService {
         gameState.setTimeStamp(System.currentTimeMillis());
 
         tileMapService.positionNewTetrisPiece(gameState);
+
+        return gameStateMemoryService.save(gameState);
+    }
+
+    private GameState updateGameState(GameStateRequest gameStateRequest, GameState gameState) {
+        Boolean computerMove = gameStateRequest.getComputerMove();
+        String userKeyInput = gameStateRequest.getKey();
+
+        tileMapService.unpaintTetrisPiece(gameState);
+
+        if (computerMove) {
+            movementService.doComputerMove(gameState);
+        }
+
+        if (!userKeyInput.equals("NO_KEY")) {
+            movementService.doUserMove(gameState, gameStateRequest.getKey());
+        }
+
+        gameState.setTimeStamp(System.currentTimeMillis());
+        tileMapService.paintTetrisPiece(gameState);
 
         return gameStateMemoryService.save(gameState);
     }
