@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @GetMapping("/generateSessionId")
-    public ResponseEntity getSessionId() {
+    public ResponseEntity generateSessionId() {
         try {
             return ResponseEntity.ok(authService.generateSessionId());
         } catch (Exception e) {

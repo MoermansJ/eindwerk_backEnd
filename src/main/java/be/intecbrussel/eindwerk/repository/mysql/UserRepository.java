@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.repository;
+package be.intecbrussel.eindwerk.repository.mysql;
 
 import be.intecbrussel.eindwerk.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

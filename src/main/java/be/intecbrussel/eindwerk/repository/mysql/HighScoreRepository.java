@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.repository;
+package be.intecbrussel.eindwerk.repository.mysql;
 
 import be.intecbrussel.eindwerk.model.HighScore;
 import be.intecbrussel.eindwerk.model.User;

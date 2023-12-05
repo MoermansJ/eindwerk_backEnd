@@ -3,6 +3,7 @@ package be.intecbrussel.eindwerk.config;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,9 +24,10 @@ import java.util.HashMap;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "gamestateEntityManagerFactory",
-        basePackages = "be.intecbrussel.eindwerk.games.tetris.repository",
+        basePackages = {"be.intecbrussel.eindwerk.games.tetris.repository", "be.intecbrussel.eindwerk.repository.h2"},
         transactionManagerRef = "gamestateTransactionManager"
 )
+@EntityScan(basePackages = {"be.intecbrussel.eindwerk.games.tetris.model"})
 @Data
 public class H2DataSourceConfig {
     @Primary
@@ -41,8 +43,8 @@ public class H2DataSourceConfig {
     @Bean(name = "gamestateEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManager() {
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
-        bean.setDataSource(dataSource());
-
+        bean.setDataSource(this.dataSource());
+        bean.setPackagesToScan("be.intecbrussel.eindwerk.games.tetris.model");
         JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(adapter);
 
@@ -50,7 +52,6 @@ public class H2DataSourceConfig {
         properties.put("hibernate.hbm2ddl.auto", "update");
         properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         bean.setJpaPropertyMap(properties);
-        bean.setPackagesToScan("be.intecbrussel.eindwerk.games.tetris.model");
         return bean;
     }
 

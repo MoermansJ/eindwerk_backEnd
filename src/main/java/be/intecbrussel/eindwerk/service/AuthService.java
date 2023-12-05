@@ -4,9 +4,8 @@ import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
-import be.intecbrussel.eindwerk.repository.UserRepository;
+import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import be.intecbrussel.eindwerk.security.JWTUtil;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -88,7 +87,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Map generateSessionId() {
+    public Map<String, String> generateSessionId() {
         String sessionId = UUID.randomUUID().toString();
         Map<String, String> responseJson = new HashMap<>(); // Making it JSON compatible
         responseJson.put("sessionId", sessionId);

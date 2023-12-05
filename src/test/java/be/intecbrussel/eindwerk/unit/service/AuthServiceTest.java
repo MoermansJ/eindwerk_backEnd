@@ -4,7 +4,7 @@ import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
-import be.intecbrussel.eindwerk.repository.UserRepository;
+import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import be.intecbrussel.eindwerk.service.AuthService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

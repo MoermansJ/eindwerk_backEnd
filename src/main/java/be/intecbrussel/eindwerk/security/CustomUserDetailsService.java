@@ -2,7 +2,7 @@ package be.intecbrussel.eindwerk.security;
 
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
-import be.intecbrussel.eindwerk.repository.UserRepository;
+import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;

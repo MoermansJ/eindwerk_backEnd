@@ -10,10 +10,14 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class GameAspect {
-    @Autowired
     private FileLogger fileLogger;
 
-    
+
+    public GameAspect(FileLogger fileLogger) {
+        this.fileLogger = fileLogger;
+    }
+
+
     //getGameState
     @Around("execution(* be.intecbrussel.eindwerk.service.GameService.getGameState(..))")
     public Object aroundGetGameState(ProceedingJoinPoint joinPoint) throws Throwable {

@@ -3,7 +3,7 @@ package be.intecbrussel.eindwerk.service;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.HighScore;
 import be.intecbrussel.eindwerk.model.User;
-import be.intecbrussel.eindwerk.repository.HighScoreRepository;
+import be.intecbrussel.eindwerk.repository.mysql.HighScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

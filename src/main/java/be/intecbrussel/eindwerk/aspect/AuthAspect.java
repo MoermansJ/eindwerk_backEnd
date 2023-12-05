@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class AuthAspect {
-    @Autowired
     private FileLogger fileLogger;
+
+
+    public AuthAspect(FileLogger fileLogger) {
+        this.fileLogger = fileLogger;
+    }
 
 
     //login

@@ -22,7 +22,7 @@ import java.util.HashMap;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "userEntityManagerFactory",
-        basePackages = "be.intecbrussel.eindwerk.repository",
+        basePackages = "be.intecbrussel.eindwerk.repository.mysql",
         transactionManagerRef = "userTransactionManager"
 )
 @Data
