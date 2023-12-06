@@ -26,6 +26,8 @@ public class GameState {
 
     private Long timeStamp;
 
-    private int userScore;
+    private Long userScore;
+
+    private Long userId;
 }
 

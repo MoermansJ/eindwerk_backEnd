@@ -15,8 +15,13 @@ public class HighScore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private User user;
+    private Long userId;
 
     private Long score;
+
+
+    public HighScore(Long userId, Long score) {
+        this.userId = userId;
+        this.score = score;
+    }
 }

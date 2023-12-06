@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface HighScoreRepository extends JpaRepository<HighScore, Long> {
-    Optional<HighScore> findHighScoreByUser(User user);
+    Optional<HighScore> findHighScoreByUserId(Long userId);
 }

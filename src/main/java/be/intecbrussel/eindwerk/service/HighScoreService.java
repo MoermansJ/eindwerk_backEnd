@@ -23,9 +23,9 @@ public class HighScoreService {
 
 
     public HighScore saveHighScore(HighScore highScore) {
-        User user = highScore.getUser();
+        Long userId = highScore.getUserId();
 
-        Optional<HighScore> oDbHighScore = highScoreRepository.findHighScoreByUser(user);
+        Optional<HighScore> oDbHighScore = highScoreRepository.findHighScoreByUserId(userId);
 
         if (oDbHighScore.isEmpty()) {
             return highScoreRepository.save(highScore);
@@ -40,12 +40,12 @@ public class HighScoreService {
         return this.highScoreRepository.save(highScore);
     }
 
-    private HighScore getHighScoreByUser(User user) {
-        Optional<HighScore> dbHighScore = this.highScoreRepository.findHighScoreByUser(user);
-
-        if (dbHighScore.isEmpty())
-            throw new InvalidCredentialsException("User " + user.getUsername() + " does not have a highscore.");
-
-        return dbHighScore.get();
-    }
+//    private HighScore getHighScoreByUser(User user) {
+//        Optional<HighScore> dbHighScore = this.highScoreRepository.findHighScoreByUser(user);
+//
+//        if (dbHighScore.isEmpty())
+//            throw new InvalidCredentialsException("User " + user.getUsername() + " does not have a highscore.");
+//
+//        return dbHighScore.get();
+//    }
 }

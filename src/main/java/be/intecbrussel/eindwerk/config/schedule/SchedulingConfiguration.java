@@ -18,8 +18,10 @@ public class SchedulingConfiguration {
     }
 
 
-    @Scheduled(fixedRate = 900000) // 15 minutes in milliseconds
+    //    @Scheduled(fixedRate = 900000) // 15 minutes in milliseconds
+    @Scheduled(fixedRate = 5000) // 15 minutes in milliseconds
     private void cleanH2Database() {
-        databaseService.deleteRecordsOlderThanMinutes(15);
+//        databaseService.deleteRecordsOlderThanMinutes(15);
+        databaseService.deleteRecordsOlderThanMinutes(1);
     }
 }
