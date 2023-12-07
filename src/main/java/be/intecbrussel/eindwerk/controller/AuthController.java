@@ -1,16 +1,11 @@
 package be.intecbrussel.eindwerk.controller;
 
-import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
-import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
+import be.intecbrussel.eindwerk.model.dto.AuthAttemptDTO;
+import be.intecbrussel.eindwerk.model.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.service.AuthService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")

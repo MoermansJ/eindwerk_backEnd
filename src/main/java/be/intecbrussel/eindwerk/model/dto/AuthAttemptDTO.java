@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.dto;
+package be.intecbrussel.eindwerk.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

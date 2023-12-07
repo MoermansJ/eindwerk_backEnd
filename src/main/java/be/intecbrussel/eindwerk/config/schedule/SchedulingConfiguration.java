@@ -10,18 +10,15 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 @Component
 public class SchedulingConfiguration {
-    private ScheduleService databaseService;
-
+    private ScheduleService scheduleService;
 
     public SchedulingConfiguration(ScheduleService databaseService) {
-        this.databaseService = databaseService;
+        this.scheduleService = databaseService;
     }
 
-
-    //    @Scheduled(fixedRate = 900000) // 15 minutes in milliseconds
-    @Scheduled(fixedRate = 5000) // 15 minutes in milliseconds
+    @Scheduled(fixedRate = 60000)
     private void cleanH2Database() {
-//        databaseService.deleteRecordsOlderThanMinutes(15);
-        databaseService.deleteRecordsOlderThanMinutes(1);
+        scheduleService.saveNewHighScores();
+        scheduleService.deleteRecordsOlderThanMinutes(1);
     }
 }

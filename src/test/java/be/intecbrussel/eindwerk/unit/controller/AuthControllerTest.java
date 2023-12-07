@@ -1,7 +1,7 @@
 package be.intecbrussel.eindwerk.unit.controller;
 
 import be.intecbrussel.eindwerk.controller.AuthController;
-import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
+import be.intecbrussel.eindwerk.model.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import be.intecbrussel.eindwerk.service.AuthService;

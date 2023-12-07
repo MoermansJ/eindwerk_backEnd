@@ -35,14 +35,16 @@ public class GameService {
         Optional<GameState> oDbGameState = gameStateMemoryService.getLatestGameStateBySessionId(sessionId);
 
         if (oDbGameState.isEmpty()) {
-            return this.getDefaultGamestate(gameStateRequest.getSessionId());
+            return this.getDefaultGamestate(gameStateRequest);
         }
 
         return this.updateGameState(gameStateRequest, oDbGameState.get());
     }
 
-    private GameState getDefaultGamestate(String sessionId) {
+    private GameState getDefaultGamestate(GameStateRequest gameStateRequest) {
         GameState gameState = new GameState();
+        String username = gameStateRequest.getUsername();
+        String sessionId = gameStateRequest.getSessionId();
         int width = 10, height = 20;
 
         TetrisPiece tetrisPiece = tetrisPieceService.getNextTetrisPiece();
@@ -53,6 +55,7 @@ public class GameService {
         gameState.setCurrentPiece(tetrisPiece);
         gameState.setSessionId(sessionId);
         gameState.setTimeStamp(System.currentTimeMillis());
+        gameState.setUsername(username);
 
         tileMapService.positionNewTetrisPiece(gameState);
 
@@ -61,7 +64,7 @@ public class GameService {
 
     private GameState updateGameState(GameStateRequest gameStateRequest, GameState gameState) {
         Boolean computerMove = gameStateRequest.getComputerMove();
-        String userKeyInput = gameStateRequest.getKey();
+        String userKeyInput = gameStateRequest.getKeyPressed();
 
         tileMapService.unpaintTetrisPiece(gameState);
 
@@ -70,7 +73,7 @@ public class GameService {
         }
 
         if (!userKeyInput.equals("NO_KEY")) {
-            movementService.doUserMove(gameState, gameStateRequest.getKey());
+            movementService.doUserMove(gameState, gameStateRequest.getKeyPressed());
         }
 
         gameState.setTimeStamp(System.currentTimeMillis());

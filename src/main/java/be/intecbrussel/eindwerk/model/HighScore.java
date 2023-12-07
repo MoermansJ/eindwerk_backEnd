@@ -15,13 +15,13 @@ public class HighScore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    private String username;
 
     private Long score;
 
 
-    public HighScore(Long userId, Long score) {
-        this.userId = userId;
+    public HighScore(String username, Long score) {
+        this.username = username;
         this.score = score;
     }
 }

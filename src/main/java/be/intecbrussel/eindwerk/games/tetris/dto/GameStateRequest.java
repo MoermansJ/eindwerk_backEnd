@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class GameStateRequest {
     private Boolean computerMove;
-    private String key;
+    private String keyPressed;
     private String sessionId;
+    private String username;
 }

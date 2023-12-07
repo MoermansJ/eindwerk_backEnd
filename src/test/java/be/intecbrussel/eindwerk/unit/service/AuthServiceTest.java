@@ -1,7 +1,7 @@
 package be.intecbrussel.eindwerk.unit.service;
 
-import be.intecbrussel.eindwerk.dto.AuthAttemptDTO;
-import be.intecbrussel.eindwerk.dto.AuthTokenDTO;
+import be.intecbrussel.eindwerk.model.dto.AuthAttemptDTO;
+import be.intecbrussel.eindwerk.model.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
