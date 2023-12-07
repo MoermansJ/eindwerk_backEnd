@@ -8,6 +8,7 @@ import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,5 +44,9 @@ public class HighScoreService {
     public HighScore findByUsername(String username) {
         return this.highScoreRepository.findByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Username " + username + " does not have a highscore."));
+    }
+
+    public List<HighScore> findTop10HighScores() {
+        return this.highScoreRepository.findTop10ByOrderByScoreDesc();
     }
 }

@@ -30,7 +30,7 @@ public class ScheduleService {
     public void saveNewHighScores() {
         List<GameState> actualGameStatesWithUsers = this.fetchActualGameStatesWithUsers();
         List<HighScore> actualHighScores = deriveHighScoresFromGameStates(actualGameStatesWithUsers);
-        actualHighScores.forEach(this::saveNewHighScoreIfBetter);
+        actualHighScores.forEach(this::saveNewHighScoreIfBetterThanPrevious);
     }
 
     private List<GameState> fetchActualGameStatesWithUsers() {
@@ -47,7 +47,7 @@ public class ScheduleService {
         }).collect(Collectors.toList());
     }
 
-    private void saveNewHighScoreIfBetter(HighScore newHighScore) {
+    private void saveNewHighScoreIfBetterThanPrevious(HighScore newHighScore) {
         try {
             HighScore oldHighScore = this.highScoreService.findByUsername(newHighScore.getUsername());
             Long oldScore = this.highScoreService.findByUsername(newHighScore.getUsername()).getScore();
@@ -59,6 +59,7 @@ public class ScheduleService {
             oldHighScore.setScore(newScore);
             highScoreService.saveHighScore(oldHighScore);
         } catch (InvalidCredentialsException invalidCredentialsException) {
+            // If username doesn't occur in tb_highscore
             highScoreService.saveHighScore(newHighScore);
         }
     }

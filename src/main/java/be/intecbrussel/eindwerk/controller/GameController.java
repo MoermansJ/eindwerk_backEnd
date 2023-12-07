@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 class GameController {
     private GameService gameService;
 
-    
     public GameController(GameService gameService) {
         this.gameService = gameService;
     }
-
 
     @PostMapping("/getGameState")
     public ResponseEntity getGameState(@RequestBody GameStateRequest gameStateRequest) {
@@ -28,4 +26,6 @@ class GameController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
 }

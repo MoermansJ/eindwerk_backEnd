@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private AuthService authService;
 
-
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-
-
+    
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody AuthAttemptDTO authAttemptDTO) {
         try {
@@ -56,4 +54,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
 }
