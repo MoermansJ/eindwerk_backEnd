@@ -92,7 +92,8 @@ stop
 @startuml
 start
 
-:play game;
+:game starts with default gamestate;
+:user or computer action updates the gamestate;
 
 stop
 @enduml
