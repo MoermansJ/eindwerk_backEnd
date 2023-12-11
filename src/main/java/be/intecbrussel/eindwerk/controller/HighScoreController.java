@@ -1,8 +1,8 @@
 package be.intecbrussel.eindwerk.controller;
 
 import be.intecbrussel.eindwerk.service.HighScoreService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +18,10 @@ public class HighScoreController {
         this.highScoreService = highScoreService;
     }
 
-    @GetMapping("/getTop10HighScores")
-    public ResponseEntity getTop10HighScores() {
+    @GetMapping("/getAllHighScores")
+    public ResponseEntity getHighScores() {
         try {
-            return ResponseEntity.ok(highScoreService.findTop10HighScores());
+            return ResponseEntity.ok(highScoreService.findAllHighScores());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

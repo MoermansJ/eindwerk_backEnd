@@ -6,6 +6,9 @@ import be.intecbrussel.eindwerk.model.User;
 import be.intecbrussel.eindwerk.repository.mysql.HighScoreRepository;
 import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +17,10 @@ import java.util.Optional;
 @Service
 public class HighScoreService {
     private HighScoreRepository highScoreRepository;
-    private UserRepository userRepository;
 
 
-    public HighScoreService(HighScoreRepository highScoreRepository, UserRepository userRepository) {
+    public HighScoreService(HighScoreRepository highScoreRepository) {
         this.highScoreRepository = highScoreRepository;
-        this.userRepository = userRepository;
     }
 
 
@@ -46,7 +47,7 @@ public class HighScoreService {
                 .orElseThrow(() -> new InvalidCredentialsException("Username " + username + " does not have a highscore."));
     }
 
-    public List<HighScore> findTop10HighScores() {
-        return this.highScoreRepository.findTop10ByOrderByScoreDesc();
+    public List<HighScore> findAllHighScores() {
+        return this.highScoreRepository.findAllByOrderByScoreDesc();
     }
 }
