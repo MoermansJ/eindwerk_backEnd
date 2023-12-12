@@ -4,7 +4,6 @@ import be.intecbrussel.eindwerk.model.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.model.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
 import be.intecbrussel.eindwerk.model.User;
-import be.intecbrussel.eindwerk.repository.mysql.UserRepository;
 import be.intecbrussel.eindwerk.security.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,17 +18,18 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
-    private UserRepository userRepository;
+    private UserService userService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AuthenticationManager authenticationManager;
     private JWTUtil jwtUtil;
 
 
-    public AuthService(UserRepository userRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder,
-                       AuthenticationManager authenticationManager,
-                       JWTUtil jwtUtil) {
-        this.userRepository = userRepository;
+    public AuthService(
+            UserService userService,
+            BCryptPasswordEncoder bCryptPasswordEncoder,
+            AuthenticationManager authenticationManager,
+            JWTUtil jwtUtil) {
+        this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -37,7 +37,7 @@ public class AuthService {
 
 
     public User register(AuthAttemptDTO authAttemptDTO) {
-        Optional<User> oDbUser = userRepository.findUserByUsername(authAttemptDTO.getUsername());
+        Optional<User> oDbUser = userService.findUserByUsername(authAttemptDTO.getUsername());
 
         if (oDbUser.isPresent()) {
             throw new InvalidCredentialsException("That username is already registered.");
@@ -52,7 +52,7 @@ public class AuthService {
     }
 
     public AuthTokenDTO login(AuthAttemptDTO authAttemptDTO) {
-        Optional<User> oDbUser = userRepository.findUserByUsername(authAttemptDTO.getUsername());
+        Optional<User> oDbUser = userService.findUserByUsername(authAttemptDTO.getUsername());
 
         if (oDbUser.isEmpty()) {
             throw new InvalidCredentialsException("Username not found.");
@@ -84,7 +84,7 @@ public class AuthService {
         String username = authAttemptDTO.getUsername();
         String password = bCryptPasswordEncoder.encode(authAttemptDTO.getPassword());
         User user = new User(username, password);
-        return userRepository.save(user);
+        return userService.saveUser(user);
     }
 
     public Map<String, String> generateSessionId() {
