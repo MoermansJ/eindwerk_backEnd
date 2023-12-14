@@ -25,13 +25,13 @@ public class TileMapService {
         return emptyTileMap;
     }
 
-    public void unpaintTetrisPiece(GameState gameState) {
+    public void unpaintCurrentPiece(GameState gameState) {
         TetrisPiece tetrisPiece = gameState.getCurrentPiece();
         List<Tile> matchingTiles = this.getMatchingTiles(gameState.getTileMap().getTiles(), gameState.getCurrentPiece());
         matchingTiles.forEach(mt -> mt.setContent("blank"));
     }
 
-    public void paintTetrisPiece(GameState gameState) {
+    public void paintCurrentPiece(GameState gameState) {
         TetrisPiece tetrisPiece = gameState.getCurrentPiece();
         List<Tile> matchingTiles = this.getMatchingTiles(gameState.getTileMap().getTiles(), gameState.getCurrentPiece());
         matchingTiles.forEach(mt -> mt.setContent(tetrisPiece.getContent()));
@@ -57,21 +57,15 @@ public class TileMapService {
 
         // Scanning all rows to see if they're completed
         for (int rowIndex = 0; rowIndex < height; rowIndex++) {
-            final int finalRowNum = rowIndex;
+            List<Tile> currentRowNoBlankTiles = this.getNonBlankTilesByRow(tileMap, rowIndex);
+            boolean isRowComplete = currentRowNoBlankTiles.size() == tileMap.getWidth();
 
-            // Getting row - All tiles with a specific Y
-            List<Tile> rowTiles = tileMap.getTiles().stream().filter(tile -> tile.getPoint().getY() == finalRowNum).toList();
-
-            // Filtering out blank tiles
-            rowTiles = rowTiles.stream().filter(tile -> !tile.getContent().equals("blank")).collect(Collectors.toList());
-
-            // If row is incomplete
-            if (rowTiles.size() < width) {
+            if (!isRowComplete) {
                 continue;
             }
 
             // Removing tiles from completed row
-            tileMap.getTiles().removeAll(rowTiles);
+            tileMap.getTiles().removeAll(currentRowNoBlankTiles);
 
             // Moving all the rows above the removed row down by one
             this.collapseRows(tileMap, rowIndex);
@@ -82,7 +76,16 @@ public class TileMapService {
             // Update users score
             this.updateLinesCleared(tileMap);
         }
+
     }
+
+    private List<Tile> getNonBlankTilesByRow(TileMap tileMap, int rowIndex) {
+        return tileMap.getTiles().stream()
+                .filter(tile -> tile.getPoint().getY() == rowIndex)
+                .filter(tile -> !tile.getContent().equals("blank"))
+                .collect(Collectors.toList());
+    }
+
 
     private List<Tile> getNewTopRow(TileMap tileMap) {
         List<Tile> blankRowTileList = new ArrayList<>();

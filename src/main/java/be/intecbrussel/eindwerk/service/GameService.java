@@ -1,6 +1,7 @@
 package be.intecbrussel.eindwerk.service;
 
-import be.intecbrussel.eindwerk.games.tetris.dto.GameStateRequest;
+import be.intecbrussel.eindwerk.games.tetris.model.dto.GameStateRequest;
+import be.intecbrussel.eindwerk.games.tetris.model.Direction;
 import be.intecbrussel.eindwerk.games.tetris.model.GameState;
 import be.intecbrussel.eindwerk.games.tetris.model.Tile;
 import be.intecbrussel.eindwerk.games.tetris.model.TileMap;
@@ -8,8 +9,10 @@ import be.intecbrussel.eindwerk.games.tetris.model.piece.TetrisPiece;
 import be.intecbrussel.eindwerk.games.tetris.service.*;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -63,22 +66,13 @@ public class GameService {
     }
 
     private GameState updateGameState(GameStateRequest gameStateRequest, GameState gameState) {
-        Boolean computerMove = gameStateRequest.getComputerMove();
-        String userKeyInput = gameStateRequest.getKeyPressed();
+        List<Direction> movementBuffer = gameStateRequest.getMovementBuffer().stream()
+                .map(movement -> movementService.getDirectionFromString(movement))
+                .collect(Collectors.toList());
 
-        tileMapService.unpaintTetrisPiece(gameState);
-
-        if (computerMove) {
-            movementService.doComputerMove(gameState);
-        }
-
-        if (!userKeyInput.equals("NO_KEY")) {
-            movementService.doUserMove(gameState, gameStateRequest.getKeyPressed());
-        }
+        movementBuffer.forEach(movement -> movementService.executeMovement(gameState, movement));
 
         gameState.setTimeStamp(System.currentTimeMillis());
-        tileMapService.paintTetrisPiece(gameState);
-
         return gameStateMemoryService.save(gameState);
     }
 }
