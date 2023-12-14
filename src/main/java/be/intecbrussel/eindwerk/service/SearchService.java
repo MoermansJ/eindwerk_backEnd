@@ -23,6 +23,4 @@ public class SearchService {
 
         return oDbUser.get();
     }
-
-
 }
