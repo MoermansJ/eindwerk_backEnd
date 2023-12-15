@@ -6,7 +6,6 @@ import be.intecbrussel.eindwerk.games.tetris.model.TileMap;
 import be.intecbrussel.eindwerk.games.tetris.model.piece.TetrisPiece;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,66 +25,69 @@ public class TileMapService {
     }
 
     public void unpaintCurrentPiece(GameState gameState) {
-        TetrisPiece tetrisPiece = gameState.getCurrentPiece();
-        List<Tile> matchingTiles = this.getMatchingTiles(gameState.getTileMap().getTiles(), gameState.getCurrentPiece());
-        matchingTiles.forEach(mt -> mt.setContent("blank"));
+        TetrisPiece currentPiece = gameState.getCurrentPiece();
+        List<Tile> tileMapTiles = gameState.getTileMap().getTiles();
+
+        this.getMatchingTiles(tileMapTiles, currentPiece)
+                .forEach(tile -> tile.setContent("blank"));
     }
 
     public void paintCurrentPiece(GameState gameState) {
         TetrisPiece tetrisPiece = gameState.getCurrentPiece();
         List<Tile> matchingTiles = this.getMatchingTiles(gameState.getTileMap().getTiles(), gameState.getCurrentPiece());
-        matchingTiles.forEach(mt -> mt.setContent(tetrisPiece.getContent()));
+        matchingTiles.forEach(tile -> tile.setContent(tetrisPiece.getContent()));
     }
 
     private List<Tile> getMatchingTiles(List<Tile> tileMapTiles, TetrisPiece tetrisPiece) {
-        List<Tile> matchingTiles = new ArrayList<>();
-
-        for (Point p : tetrisPiece.getPoints()) {
-            List<Tile> matchingTilesForPoint = tileMapTiles.stream()
-                    .filter(tmt -> tmt.getPoint().equals(p))
-                    .collect(Collectors.toList());
-
-            matchingTiles.addAll(matchingTilesForPoint);
-        }
-
-        return matchingTiles;
+        return tetrisPiece.getPoints().stream()
+                .flatMap(piecePoint -> tileMapTiles.stream()
+                        .filter(tile -> tile.getPoint().equals(piecePoint)))
+                .collect(Collectors.toList());
     }
 
-    public void removeCompleteLinesFromTileMap(TileMap tileMap) {
+    public void removeCompletedLinesFromTileMap(TileMap tileMap) {
         int width = tileMap.getWidth();
         int height = tileMap.getHeight();
+        List<Integer> completedRowIndexes = new ArrayList<>();
 
-        // Scanning all rows to see if they're completed
-        for (int rowIndex = 0; rowIndex < height; rowIndex++) {
-            List<Tile> currentRowNoBlankTiles = this.getNonBlankTilesByRow(tileMap, rowIndex);
-            boolean isRowComplete = currentRowNoBlankTiles.size() == tileMap.getWidth();
+        boolean linesRemoved = false;
+        do {
+            linesRemoved = false;
 
-            if (!isRowComplete) {
-                continue;
+            // Scanning all rows to see if they're completed
+            for (int rowIndex = 0; rowIndex < height; rowIndex++) {
+                List<Tile> currentRowTiles = this.getTilesByRow(tileMap, rowIndex);
+                boolean isRowComplete = currentRowTiles.size() == width;
+
+                if (isRowComplete) {
+                    completedRowIndexes.add(rowIndex);
+                    linesRemoved = true;
+                }
             }
 
-            // Removing tiles from completed row
-            tileMap.getTiles().removeAll(currentRowNoBlankTiles);
+            if (linesRemoved) {
+                // Remove completed rows and insert blank rows
+                for (int i = completedRowIndexes.size() - 1; i >= 0; i--) {
+                    int rowIndex = completedRowIndexes.get(i);
 
-            // Moving all the rows above the removed row down by one
-            this.collapseRows(tileMap, rowIndex);
+                    tileMap.getTiles().removeAll(this.getTilesByRow(tileMap, rowIndex));
+                    this.collapseRows(tileMap, rowIndex);
+                    this.updateLinesCleared(tileMap);
+                    tileMap.getTiles().addAll(this.getNewTopRow(tileMap));
+                }
 
-            // Adding a new row of blank tiles as the new top row
-            tileMap.getTiles().addAll(this.getNewTopRow(tileMap));
-
-            // Update users score
-            this.updateLinesCleared(tileMap);
-        }
-
+                completedRowIndexes.clear(); // Clear the list for the next iteration
+            }
+        } while (linesRemoved);
     }
 
-    private List<Tile> getNonBlankTilesByRow(TileMap tileMap, int rowIndex) {
+
+    private List<Tile> getTilesByRow(TileMap tileMap, int rowIndex) {
         return tileMap.getTiles().stream()
                 .filter(tile -> tile.getPoint().getY() == rowIndex)
                 .filter(tile -> !tile.getContent().equals("blank"))
                 .collect(Collectors.toList());
     }
-
 
     private List<Tile> getNewTopRow(TileMap tileMap) {
         List<Tile> blankRowTileList = new ArrayList<>();
@@ -100,8 +102,6 @@ public class TileMapService {
     }
 
     private void collapseRows(TileMap tileMap, int removedRowIndex) {
-        List<Tile> updatedTiles = new ArrayList<>();
-
         // For each row that is between the completed row and, including, top row
         for (int i = (removedRowIndex + 1); i < tileMap.getHeight(); i++) {
             final int currentRow = i;
@@ -110,11 +110,9 @@ public class TileMapService {
                     .forEach(tile -> {
                         int x = tile.getPoint().x;
                         int y = tile.getPoint().y - 1;
-                        updatedTiles.add(new Tile(x, y, tile.getContent()));
+                        tile.getPoint().setLocation(x, y);
                     });
         }
-
-        tileMap.setTiles(updatedTiles);
     }
 
     public void positionNewTetrisPiece(GameState gameState) {

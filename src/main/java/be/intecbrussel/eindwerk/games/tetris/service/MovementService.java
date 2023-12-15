@@ -93,7 +93,7 @@ public class MovementService {
             tileMapService.paintCurrentPiece(gameState);
 
             if (direction == Direction.DOWN) {
-                tileMapService.removeCompleteLinesFromTileMap(gameState.getTileMap());
+                tileMapService.removeCompletedLinesFromTileMap(gameState.getTileMap());
                 TetrisPiece newTetrisPiece = tetrisPieceService.getNextTetrisPiece();
                 gameState.setCurrentPiece(newTetrisPiece);
                 tileMapService.positionNewTetrisPiece(gameState);
