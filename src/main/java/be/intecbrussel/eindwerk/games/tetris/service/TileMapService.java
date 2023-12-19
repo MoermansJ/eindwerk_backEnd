@@ -4,6 +4,7 @@ import be.intecbrussel.eindwerk.games.tetris.model.GameState;
 import be.intecbrussel.eindwerk.games.tetris.model.Tile;
 import be.intecbrussel.eindwerk.games.tetris.model.TileMap;
 import be.intecbrussel.eindwerk.games.tetris.model.piece.TetrisPiece;
+import be.intecbrussel.eindwerk.util.sorting.IntegerSorter;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -15,6 +16,12 @@ import java.util.stream.IntStream;
 
 @Service
 public class TileMapService {
+    private IntegerSorter integerSorter;
+
+    public TileMapService(IntegerSorter integerSorter) {
+        this.integerSorter = integerSorter;
+    }
+
     public List<Tile> createEmptyTileMap(int width, int height) {
         List<Tile> emptyTileMap = new ArrayList<>();
 
@@ -43,7 +50,7 @@ public class TileMapService {
                 .forEach(tile -> tile.setContent(currentPiece.getContent()));
     }
 
-    private List<Tile> getMatchingTiles(List<Tile> tileMapTiles, TetrisPiece tetrisPiece) {
+    public List<Tile> getMatchingTiles(List<Tile> tileMapTiles, TetrisPiece tetrisPiece) {
         return tetrisPiece.getPoints().stream()
                 .flatMap(piecePoint -> tileMapTiles.stream()
                         .filter(tile -> tile.getPoint().equals(piecePoint)))
@@ -53,7 +60,7 @@ public class TileMapService {
     public void removeCompletedRowsFromTileMap(TileMap tileMap) {
         List<Integer> completedRowIndexes = this.getCompletedRowIndexes(tileMap);
 
-        this.sortHighToLow(completedRowIndexes)
+        this.integerSorter.sortHighToLow(completedRowIndexes)
                 .forEach(rowIndex -> this.handleCompletedRow(tileMap, rowIndex));
     }
 
@@ -129,11 +136,5 @@ public class TileMapService {
     private void updateScoreCounter(TileMap tileMap) {
         int scoreCounter = tileMap.getLinesCleared();
         tileMap.setLinesCleared(++scoreCounter);
-    }
-
-    private List<Integer> sortHighToLow(List<Integer> listToSort) {
-        return listToSort.stream()
-                .sorted(Collections.reverseOrder())
-                .collect(Collectors.toList());
     }
 }

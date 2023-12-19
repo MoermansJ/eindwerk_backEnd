@@ -36,7 +36,7 @@ public class ScheduleService {
     private List<GameState> fetchActualGameStatesWithUsers() {
         List<GameState> h2Gamestates = h2Repository.findAll();
         return h2Gamestates.stream()
-                .filter(gameState -> gameState.getUsername() != null)
+                .filter(gameState -> !gameState.getUsername().trim().isEmpty())
                 .collect(Collectors.toList());
     }
 

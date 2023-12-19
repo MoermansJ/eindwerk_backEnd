@@ -13,4 +13,5 @@ public class GameStateRequest {
     private List<String> movementBuffer;
     private String sessionId;
     private String username;
+    private String seed;
 }

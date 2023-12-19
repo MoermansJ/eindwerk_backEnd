@@ -1,4 +1,4 @@
-package be.intecbrussel.eindwerk.logger;
+package be.intecbrussel.eindwerk.util.logger;
 
 import org.springframework.stereotype.Component;
 

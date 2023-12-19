@@ -17,7 +17,6 @@ public class GameStateMemoryService {
     }
 
     public Optional<GameState> getLatestGameStateBySessionId(String sessionId) {
-//        return gameStateMemoryRepository.findMostRecentGameStateBySessionId(sessionId);
         return gameStateMemoryRepository.findFirstBySessionIdOrderByTimeStampDesc(sessionId);
     }
 }

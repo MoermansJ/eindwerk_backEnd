@@ -11,7 +11,7 @@ import java.util.Random;
 
 @Service
 public class TetrisPieceService {
-    public List<Point> rotate(TetrisPiece tetrisPiece, TileMap tileMap) {
+    public List<Point> rotateTetrisPiece(TetrisPiece tetrisPiece, TileMap tileMap) {
         int currentRotations = tetrisPiece.getRotationCounter();
         tetrisPiece.setRotationCounter(++currentRotations);
         List<Point> currentPoints = new ArrayList<>(tetrisPiece.getPoints());
@@ -59,26 +59,5 @@ public class TetrisPieceService {
         return new Point(totalX / points.size(), totalY / points.size());
     }
 
-    public TetrisPiece getNextTetrisPiece() {
-        Random random = new Random();
-        int randomInt = random.nextInt(0, 7);
 
-        switch (randomInt) {
-            case 0:
-                return new PieceI();
-            case 1:
-                return new PieceJ();
-            case 2:
-                return new PieceL();
-            case 3:
-                return new PieceO();
-            case 4:
-                return new PieceS();
-            case 5:
-                return new PieceT();
-            case 6:
-                return new PieceZ();
-        }
-        return new PieceZ();
-    }
 }
