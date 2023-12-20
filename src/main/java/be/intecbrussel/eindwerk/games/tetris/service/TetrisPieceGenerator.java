@@ -5,8 +5,6 @@ import be.intecbrussel.eindwerk.games.tetris.util.random.SeededRandomGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class TetrisPieceGenerator {
@@ -16,7 +14,7 @@ public class TetrisPieceGenerator {
         this.seededRandomGenerator = seededRandomGenerator;
     }
 
-    public TetrisPiece getNextTetrisPiece(int number) {
+    public TetrisPiece getNewTetrisPiece(int number) {
         switch (number) {
             case 0:
                 return new PieceI();

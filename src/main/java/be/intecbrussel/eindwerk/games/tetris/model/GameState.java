@@ -17,9 +17,13 @@ public class GameState {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> seededGenerationPattern;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private TileMap tileMap;
+    private TileMap currentPieceTileMap;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private TileMap nextPieceTileMap;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private TetrisPiece currentPiece;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private TetrisPiece nextPiece;
     private String sessionId;
     private String username;
     private String seed;

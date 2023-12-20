@@ -51,7 +51,7 @@ public class MovementService {
 
     public boolean isNextMovePossible(GameState gameState, List<Point> points) {
         TetrisPiece currentPiece = gameState.getCurrentPiece();
-        TileMap tileMap = gameState.getTileMap();
+        TileMap tileMap = gameState.getCurrentPieceTileMap();
 
 
         for (Point point : points) {
@@ -82,7 +82,7 @@ public class MovementService {
 
     public void executeMovement(GameState gameState, Direction direction) {
         TetrisPiece currentPiece = gameState.getCurrentPiece();
-        tileMapService.unpaintCurrentPiece(gameState);
+        tileMapService.unpaintTetrisPieceOnTileMap(gameState.getCurrentPiece(), gameState.getCurrentPieceTileMap().getTiles());
 
         if (direction == Direction.UP) {
             handleMoveUp(gameState);
@@ -92,7 +92,7 @@ public class MovementService {
         List<Point> nextPoints = this.getNextPoints(currentPiece, direction);
 
         if (!this.isNextMovePossible(gameState, nextPoints)) {
-            tileMapService.paintCurrentPiece(gameState);
+            tileMapService.paintTetrisPieceOnTileMap(gameState.getCurrentPiece(), gameState.getCurrentPieceTileMap().getTiles());
 
             if (direction == Direction.DOWN) {
                 handleMoveDown(gameState);
@@ -103,28 +103,39 @@ public class MovementService {
 
 
         gameState.getCurrentPiece().setPoints(nextPoints);
-        tileMapService.paintCurrentPiece(gameState);
+        tileMapService.paintTetrisPieceOnTileMap(gameState.getCurrentPiece(), gameState.getCurrentPieceTileMap().getTiles());
     }
 
     private void handleMoveUp(GameState gameState) {
         TetrisPiece currentPiece = gameState.getCurrentPiece();
-        TileMap tileMap = gameState.getTileMap();
+        TileMap tileMap = gameState.getCurrentPieceTileMap();
 
         tetrisPieceService.rotateTetrisPiece(currentPiece, tileMap);
-        tileMapService.paintCurrentPiece(gameState);
+        tileMapService.paintTetrisPieceOnTileMap(gameState.getCurrentPiece(), gameState.getCurrentPieceTileMap().getTiles());
     }
 
     private void handleMoveDown(GameState gameState) {
-        TileMap tileMap = gameState.getTileMap();
+        TileMap tileMap = gameState.getCurrentPieceTileMap();
+        TetrisPiece nextPiece = gameState.getNextPiece();
+        tileMapService.unpaintTetrisPieceOnTileMap(nextPiece, gameState.getNextPieceTileMap().getTiles());
 
         List<Integer> seededGenerationPattern = gameState.getSeededGenerationPattern();
         int firstElement = seededGenerationPattern.remove(0);
-        TetrisPiece newTetrisPiece = tetrisPieceGenerator.getNextTetrisPiece(firstElement);
+        TetrisPiece newTetrisPiece = tetrisPieceGenerator.getNewTetrisPiece(firstElement);
         seededGenerationPattern.add(firstElement);
 
         tileMapService.removeCompletedRowsFromTileMap(tileMap);
-        gameState.setCurrentPiece(newTetrisPiece);
-        tileMapService.positionNewTetrisPiece(gameState);
-        tileMapService.paintCurrentPiece(gameState);
+        gameState.setNextPiece(newTetrisPiece);
+        gameState.setCurrentPiece(nextPiece);
+
+        int cpTileMapWidth = gameState.getCurrentPieceTileMap().getWidth();
+        int cpTileMapHeight = gameState.getCurrentPieceTileMap().getHeight();
+        int npTileMapWidth = gameState.getNextPieceTileMap().getWidth();
+        int npTileMapHeight = gameState.getNextPieceTileMap().getHeight();
+
+        tileMapService.positionTetrisPiece(gameState.getCurrentPiece(), cpTileMapWidth, cpTileMapHeight);
+        tileMapService.positionTetrisPiece(gameState.getNextPiece(), npTileMapWidth, npTileMapHeight);
+        tileMapService.paintTetrisPieceOnTileMap(gameState.getCurrentPiece(), gameState.getCurrentPieceTileMap().getTiles());
+        tileMapService.paintTetrisPieceOnTileMap(gameState.getNextPiece(), gameState.getNextPieceTileMap().getTiles());
     }
 }

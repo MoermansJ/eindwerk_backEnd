@@ -42,7 +42,7 @@ public class ScheduleService {
 
     private List<HighScore> deriveHighScoresFromGameStates(List<GameState> gameStates) {
         return gameStates.stream().map(gameState -> {
-            int highScore = gameState.getTileMap().getLinesCleared();
+            int highScore = gameState.getCurrentPieceTileMap().getLinesCleared();
             return new HighScore(gameState.getUsername(), highScore);
         }).collect(Collectors.toList());
     }

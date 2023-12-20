@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,20 +33,14 @@ public class TileMapService {
         return emptyTileMap;
     }
 
-    public void unpaintCurrentPiece(GameState gameState) {
-        TetrisPiece currentPiece = gameState.getCurrentPiece();
-        List<Tile> allTiles = gameState.getTileMap().getTiles();
-
-        this.getMatchingTiles(allTiles, currentPiece)
+    public void unpaintTetrisPieceOnTileMap(TetrisPiece tetrisPiece, List<Tile> tileMap) {
+        this.getMatchingTiles(tileMap, tetrisPiece)
                 .forEach(tile -> tile.setContent("blank"));
     }
 
-    public void paintCurrentPiece(GameState gameState) {
-        TetrisPiece currentPiece = gameState.getCurrentPiece();
-        List<Tile> allTiles = gameState.getTileMap().getTiles();
-
-        this.getMatchingTiles(allTiles, currentPiece)
-                .forEach(tile -> tile.setContent(currentPiece.getContent()));
+    public void paintTetrisPieceOnTileMap(TetrisPiece tetrisPiece, List<Tile> tileMap) {
+        this.getMatchingTiles(tileMap, tetrisPiece)
+                .forEach(tile -> tile.setContent(tetrisPiece.getContent()));
     }
 
     public List<Tile> getMatchingTiles(List<Tile> tileMapTiles, TetrisPiece tetrisPiece) {
@@ -118,11 +111,9 @@ public class TileMapService {
                 });
     }
 
-    public void positionNewTetrisPiece(GameState gameState) {
-        List<Point> newPiecePoints = gameState.getCurrentPiece().getPoints();
-        int width = gameState.getTileMap().getWidth();
-        int height = gameState.getTileMap().getHeight();
-        int offsetX = width / 2;
+    public void positionTetrisPiece(TetrisPiece tetrisPiece, int width, int height) {
+        List<Point> newPiecePoints = tetrisPiece.getPoints();
+        int offsetX = (width / 2 - 2);
         int offsetY = height - 3;
 
         newPiecePoints.forEach(point ->

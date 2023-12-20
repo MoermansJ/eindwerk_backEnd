@@ -45,24 +45,32 @@ public class GameStateService {
         String username = gameStateRequest.getUsername();
         String sessionId = gameStateRequest.getSessionId();
         String seed = gameStateRequest.getSeed();
-        int width = 10, height = 20;
+        int cpTileMapWidth = 10, cpTileMapHeight = 20;
+        int npTileMapWidth = 4, npTileMapHeight = 4;
 
         List<Integer> seededGenerationPattern = tetrisPieceGenerator.getGenerationPattern(seed, 100);
-        TetrisPiece firstTetrisPiece = tetrisPieceGenerator.getNextTetrisPiece(seededGenerationPattern.get(0));
-        List<Tile> emptyTiles = tileMapService.createEmptyTileMap(width, height);
-        TileMap defaultTileMap = new TileMap(width, height, emptyTiles);
+        TetrisPiece firstTetrisPiece = tetrisPieceGenerator.getNewTetrisPiece(seededGenerationPattern.get(0));
+        TetrisPiece secondTetrisPiece = tetrisPieceGenerator.getNewTetrisPiece(seededGenerationPattern.get(1));
+        List<Tile> currentPieceTileMapTiles = tileMapService.createEmptyTileMap(cpTileMapWidth, cpTileMapHeight);
+        List<Tile> nextPieceTileMapTiles = tileMapService.createEmptyTileMap(npTileMapWidth, npTileMapHeight);
+        TileMap defaultTileMap = new TileMap(cpTileMapWidth, cpTileMapHeight, currentPieceTileMapTiles);
+        TileMap defaultNextPieceTileMap = new TileMap(npTileMapWidth, npTileMapHeight, nextPieceTileMapTiles);
 
         int firstSeedElement = seededGenerationPattern.remove(0);
         seededGenerationPattern.add(firstSeedElement);
         gameState.setSeededGenerationPattern(seededGenerationPattern);
 
-        gameState.setTileMap(defaultTileMap);
+        gameState.setCurrentPieceTileMap(defaultTileMap);
         gameState.setCurrentPiece(firstTetrisPiece);
+        gameState.setNextPieceTileMap(defaultNextPieceTileMap);
+        gameState.setNextPiece(secondTetrisPiece);
         gameState.setSessionId(sessionId);
         gameState.setTimeStamp(System.currentTimeMillis());
         gameState.setUsername(username);
 
-        tileMapService.positionNewTetrisPiece(gameState);
+        tileMapService.positionTetrisPiece(firstTetrisPiece, cpTileMapWidth, cpTileMapHeight);
+        tileMapService.positionTetrisPiece(secondTetrisPiece, npTileMapWidth, npTileMapHeight);
+        tileMapService.paintTetrisPieceOnTileMap(secondTetrisPiece, nextPieceTileMapTiles);
 
         return gameStateMemoryService.save(gameState);
     }
