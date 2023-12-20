@@ -1,5 +1,6 @@
 package be.intecbrussel.eindwerk.service;
 
+import be.intecbrussel.eindwerk.model.HighScore;
 import be.intecbrussel.eindwerk.model.dto.AuthAttemptDTO;
 import be.intecbrussel.eindwerk.model.dto.AuthTokenDTO;
 import be.intecbrussel.eindwerk.exception.InvalidCredentialsException;
@@ -22,17 +23,20 @@ public class AuthService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AuthenticationManager authenticationManager;
     private JWTUtil jwtUtil;
+    private HighScoreService highScoreService;
 
 
     public AuthService(
             UserService userService,
             BCryptPasswordEncoder bCryptPasswordEncoder,
             AuthenticationManager authenticationManager,
-            JWTUtil jwtUtil) {
+            JWTUtil jwtUtil,
+            HighScoreService highScoreService) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.highScoreService = highScoreService;
     }
 
 
@@ -47,8 +51,7 @@ public class AuthService {
             throw new InvalidCredentialsException("Password must be at least 7 characters.");
         }
 
-        return this.saveUser(authAttemptDTO);
-
+        return this.saveUserAndInitialiseHighScore(authAttemptDTO);
     }
 
     public AuthTokenDTO login(AuthAttemptDTO authAttemptDTO) {
@@ -80,10 +83,12 @@ public class AuthService {
         return new AuthTokenDTO(username, token);
     }
 
-    private User saveUser(AuthAttemptDTO authAttemptDTO) {
+    private User saveUserAndInitialiseHighScore(AuthAttemptDTO authAttemptDTO) {
         String username = authAttemptDTO.getUsername();
         String password = bCryptPasswordEncoder.encode(authAttemptDTO.getPassword());
+        HighScore zero = new HighScore(username, 0);
         User user = new User(username, password);
+        highScoreService.saveHighScore(zero);
         return userService.saveUser(user);
     }
 

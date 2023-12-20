@@ -11,16 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class HighScore {
+    private String username;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+    private long score;
 
-    private String username;
-
-    private Long score;
-
-
-    public HighScore(String username, Long score) {
+    public HighScore(String username, long score) {
         this.username = username;
         this.score = score;
     }

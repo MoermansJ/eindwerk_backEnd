@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_user")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
     @Column(unique = true)
     private String username;
     private String password;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     public User(String username, String password) {
         this.username = username;

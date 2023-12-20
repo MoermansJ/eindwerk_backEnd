@@ -43,15 +43,15 @@ public class ScheduleService {
     private List<HighScore> deriveHighScoresFromGameStates(List<GameState> gameStates) {
         return gameStates.stream().map(gameState -> {
             int highScore = gameState.getTileMap().getLinesCleared();
-            return new HighScore(gameState.getUsername(), (long) highScore);
+            return new HighScore(gameState.getUsername(), highScore);
         }).collect(Collectors.toList());
     }
 
     private void saveNewHighScoreIfBetterThanPrevious(HighScore newHighScore) {
         try {
             HighScore oldHighScore = this.highScoreService.findByUsername(newHighScore.getUsername());
-            Long oldScore = this.highScoreService.findByUsername(newHighScore.getUsername()).getScore();
-            Long newScore = newHighScore.getScore();
+            long oldScore = this.highScoreService.findByUsername(newHighScore.getUsername()).getScore();
+            long newScore = newHighScore.getScore();
 
             if (!(newScore > oldScore))
                 return;
